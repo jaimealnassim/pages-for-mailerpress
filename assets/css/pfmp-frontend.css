@@ -1,0 +1,176 @@
+/* Pages for MailerPress: frontend styling.
+   Everything is scoped under .pfmp-wrap and targets the classes MailerPress
+   already outputs, so it layers on top without touching core. */
+
+.pfmp-wrap{
+  --pfmp-ink:#14392E;
+  --pfmp-button-text:#FFFFFF;
+  --pfmp-canvas:#F3F4F2;
+  --pfmp-paper:#FFFFFF;
+  --pfmp-text:#1C1B18;
+  --pfmp-soft:#4A5A52;
+  --pfmp-muted:#7C8279;
+  --pfmp-line:#E8E4DA;
+  --pfmp-line-2:#DAD5C8;
+  --pfmp-rose:#B0533D;
+
+  max-width:520px;
+  margin:32px auto;
+  background:var(--pfmp-paper);
+  border:1px solid var(--pfmp-line);
+  border-radius:var(--pfmp-radius,18px);
+  box-shadow:var(--pfmp-shadow,0 1px 2px rgba(20,57,46,.04), 0 18px 48px -24px rgba(20,57,46,.22));
+  padding:30px 30px 34px;
+  
+  color:var(--pfmp-text);
+  line-height:1.5;
+  box-sizing:border-box;
+}
+.pfmp-wrap *,.pfmp-wrap *::before,.pfmp-wrap *::after{box-sizing:border-box}
+.pfmp-centered,.pfmp-centered .pfmp-body{text-align:center}
+
+/* header */
+.pfmp-head{display:flex;flex-direction:column;align-items:center;gap:9px;margin-bottom:20px}
+.pfmp-left .pfmp-head{align-items:flex-start}
+.pfmp-mark{width:46px;height:46px;border-radius:12px;background:var(--pfmp-ink);
+  display:grid;place-items:center;color:var(--pfmp-button-text);
+  font-weight:600;font-size:26px;line-height:1}
+.pfmp-logo{max-height:56px;width:auto;display:block}
+.pfmp-pub{font-weight:700;font-size:17px;color:var(--pfmp-ink)}
+.pfmp-pub:empty,.pfmp-tag:empty{display:none}
+.pfmp-tag{font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--pfmp-muted)}
+
+/* language bar, big tap targets */
+.pfmp-langbar{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin:0 auto 22px;max-width:420px}
+.pfmp-left .pfmp-langbar{justify-content:flex-start;margin-left:0}
+.pfmp-lang{flex:1 1 0;min-width:90px;min-height:46px;cursor:pointer;
+  border:1px solid var(--pfmp-line-2);background:#FBFAF6;border-radius:12px;
+  font-size:13.5px;font-weight:600;
+  color:var(--pfmp-soft);padding:10px 8px;transition:background .16s,color .16s,border-color .16s}
+.pfmp-lang:hover{background:#F4F2EA;color:var(--pfmp-ink)}
+.pfmp-lang.is-on{background:var(--pfmp-ink);color:var(--pfmp-button-text);border-color:var(--pfmp-ink)}
+.pfmp-lang:active{transform:translateY(1px)}
+
+/* divider between header and body */
+.pfmp-body{border-top:1px solid var(--pfmp-line);padding-top:24px}
+
+/* ---- MailerPress: manage-subscription form ---- */
+.pfmp-wrap .mailerpress-manage-subscription{margin:0}
+.pfmp-wrap .mailerpress-change-email-info{color:var(--pfmp-soft);font-size:14px;margin:0 auto 20px;max-width:38ch}
+.pfmp-wrap .mailerpress-form-line{margin-bottom:22px}
+.pfmp-wrap .mailerpress-form-line:last-child{margin-bottom:0}
+
+/* section / field labels (direct text labels) */
+.pfmp-wrap .mailerpress-form-line > label{
+  display:block;font-size:12px;font-weight:600;letter-spacing:.02em;
+  color:var(--pfmp-ink);margin-bottom:10px}
+.pfmp-wrap .mailerpress-form-line > strong{font-size:15px;color:var(--pfmp-text)}
+
+/* text inputs + select */
+.pfmp-wrap .mailerpress-manage-subscription input[type="text"],
+.pfmp-wrap .mailerpress-manage-subscription select{
+  display:block;width:100%;max-width:340px;margin-left:auto;margin-right:auto;
+  font:inherit;font-size:14.5px;color:var(--pfmp-text);
+  text-align:center;text-align-last:center;background:#FBFAF6;border:1px solid var(--pfmp-line-2);
+  border-radius:11px;padding:13px 14px;min-height:46px;
+  transition:border-color .16s, box-shadow .16s, background .16s}
+.pfmp-wrap .mailerpress-manage-subscription input[type="text"]:focus,
+.pfmp-wrap .mailerpress-manage-subscription select:focus{
+  outline:none;border-color:var(--pfmp-ink);background:#fff;
+  box-shadow:0 0 0 3px rgba(29,82,65,.14)}
+.pfmp-wrap .mailerpress-manage-subscription select{
+  -webkit-appearance:none;appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234A5A52' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+
+/* list checkboxes rendered as toggles (pure CSS, input still submits).
+   !important and the explicit ::before reset below are needed because this
+   preview can render inside wp-admin, where WordPress's own admin checkbox
+   styling (a bordered square with its own blue checkmark glyph) competes
+   for the same input[type=checkbox] selector and would otherwise show
+   through, or show alongside, our toggle. */
+.pfmp-wrap .mailerpress-form-line > div{margin:0 0 10px}
+.pfmp-wrap .mailerpress-form-line > div > label{
+  display:inline-flex;align-items:center;gap:12px;font-size:14px;color:var(--pfmp-text);cursor:pointer}
+.pfmp-wrap .mailerpress-manage-subscription input[type="checkbox"]{
+  -webkit-appearance:none !important;appearance:none !important;position:relative;flex:none;margin:0;cursor:pointer;
+  width:52px;height:30px;border:0 !important;border-radius:999px !important;background:var(--pfmp-line-2) !important;
+  box-shadow:none !important;transition:background .2s}
+.pfmp-wrap .mailerpress-manage-subscription input[type="checkbox"]::before{
+  content:none !important}
+.pfmp-wrap .mailerpress-manage-subscription input[type="checkbox"]::after{
+  content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.pfmp-wrap .mailerpress-manage-subscription input[type="checkbox"]:checked{background:var(--pfmp-ink) !important}
+.pfmp-wrap .mailerpress-manage-subscription input[type="checkbox"]:checked::after{transform:translateX(22px)}
+.pfmp-wrap .mailerpress-manage-subscription input[type="checkbox"]:focus-visible{
+  outline:none;box-shadow:0 0 0 3px color-mix(in srgb, var(--pfmp-ink) 25%, transparent)}
+
+/* response message */
+.pfmp-wrap #mailerpress-response-message{
+  font-size:13px;font-weight:500;margin-top:14px !important}
+
+/* submit button */
+.pfmp-wrap .mailerpress-submit-btn,
+.pfmp-wrap button.mailerpress-submit-btn{
+  display:inline-block;font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;
+  color:var(--pfmp-button-text);background:var(--pfmp-ink);border:1px solid var(--pfmp-ink);
+  border-radius:12px;min-height:48px;padding:14px 26px;margin-top:6px;
+  box-shadow:0 8px 20px -10px rgba(20,57,46,.7);
+  transition:background .16s, transform .12s}
+.pfmp-wrap .mailerpress-submit-btn:hover{background:#1D5241;border-color:#1D5241;color:var(--pfmp-button-text)}
+.pfmp-wrap .mailerpress-submit-btn:active{transform:translateY(1px)}
+
+/* ---- confirm / success paragraphs ---- */
+.pfmp-body p{color:var(--pfmp-soft);font-size:15px;line-height:1.6;margin:0 auto}
+.pfmp-body p + p{margin-top:14px}
+
+/* state glyph above the message */
+.pfmp-body::before{display:block;width:64px;height:64px;margin:0 auto 18px;border-radius:16px;
+  font-size:28px;line-height:64px;text-align:center}
+.pfmp-state-manage .pfmp-body::before,
+.pfmp-wrap:not([class*="pfmp-state-"]) .pfmp-body::before{content:none;display:none}
+.pfmp-state-confirm .pfmp-body::before{content:"\2709";background:#E4EFE7;color:var(--pfmp-ink)}
+.pfmp-state-unsubscribe .pfmp-body::before{content:"\2713";background:#F6E9CC;color:#9A6C1E}
+.pfmp-state-confirm_unsubscribe .pfmp-body::before{content:"\2715";background:#F0DDD5;color:var(--pfmp-rose)}
+
+/* the unsubscribe link on the confirm page becomes a clear (destructive) button */
+.pfmp-state-confirm_unsubscribe .pfmp-body a{
+  display:inline-block;margin-top:18px;font-weight:600;font-size:14.5px;text-decoration:none;
+  color:#fff;background:var(--pfmp-rose);border-radius:12px;min-height:48px;line-height:20px;
+  padding:14px 26px;transition:background .16s}
+.pfmp-state-confirm_unsubscribe .pfmp-body a:hover{background:#9C452F;color:#fff}
+.pfmp-state-confirm_unsubscribe .pfmp-body br{display:none}
+
+/* off-ramp */
+.pfmp-offramp{margin:20px auto 0;font-size:13px;color:var(--pfmp-muted);max-width:36ch;text-align:center}
+.pfmp-left .pfmp-offramp{text-align:left;margin-left:0}
+.pfmp-offramp a{color:var(--pfmp-ink);font-weight:600}
+
+/* ---- RTL (Arabic) ---- */
+.pfmp-wrap[dir="rtl"] .pfmp-pub{font-weight:600}
+.pfmp-wrap[dir="rtl"] .pfmp-tag{letter-spacing:normal}
+.pfmp-wrap[dir="rtl"] .mailerpress-manage-subscription select{
+  background-position:left 14px center;padding-right:14px;padding-left:36px}
+.pfmp-wrap[dir="rtl"] .mailerpress-manage-subscription input[type="checkbox"]::after{left:auto;right:3px}
+.pfmp-wrap[dir="rtl"] .mailerpress-manage-subscription input[type="checkbox"]:checked::after{transform:translateX(-22px)}
+
+/* small screens */
+@media (max-width:560px){
+  .pfmp-wrap{margin:16px;padding:24px 20px 28px}
+}
+@media (prefers-reduced-motion:reduce){
+  .pfmp-wrap *{transition:none !important}
+}
+
+/* ---- full-page (takeover) mode ---- */
+body.pfmp-takeover{margin:0;min-height:100vh;background-color:var(--pfmp-canvas,#F3F4F2);
+  background-image:var(--pfmp-bg-image,none);background-repeat:var(--pfmp-bg-repeat,no-repeat);
+  background-size:var(--pfmp-bg-size,cover);background-position:center;-webkit-font-smoothing:antialiased}
+.pfmp-takeover-main{display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:24px 16px}
+.pfmp-takeover-main .pfmp-wrap{margin:0}
+@media (max-width:560px){
+  .pfmp-takeover-main{padding:0}
+  .pfmp-takeover-main .pfmp-wrap{margin:0;min-height:100vh;border:0;border-radius:0;box-shadow:none;max-width:none;width:100%}
+}

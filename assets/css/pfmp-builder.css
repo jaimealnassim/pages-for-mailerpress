@@ -1,0 +1,100 @@
+/* Pages for MailerPress: Builder screen. Native admin colors/spacing,
+ * a simulated preview beside an accordion of every setting. */
+
+/* This stylesheet only ever loads on our own admin page (see
+ * PFMP_Builder::assets()), so this is safe: it guards against the page
+ * becoming unscrollable if something upstream (a modal, another plugin)
+ * left overflow locked on the admin body. */
+html.wp-admin, body.wp-admin { overflow-y: auto !important; }
+
+.pfmp-builder{padding-bottom:40px}
+.pfmp-builder .pfmp-builder__top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin:12px 0 18px}
+.pfmp-builder h1{margin:0 0 4px;font-size:23px;font-weight:400;color:#1d2327}
+.pfmp-builder__sub{margin:0;color:#646970;font-size:14px;max-width:60ch}
+.pfmp-builder__top-actions{display:flex;gap:8px;align-items:center;flex:none}
+
+.pfmp-builder__toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  background:#fff;border:1px solid #c3c4c7;border-radius:4px;padding:8px 10px;margin-bottom:14px}
+.pfmp-builder__states{display:flex;gap:4px;flex-wrap:wrap}
+.pfmp-builder__state{cursor:pointer;border:1px solid transparent;background:transparent;border-radius:3px;
+  padding:7px 12px;font-size:13px;color:#2271b1}
+.pfmp-builder__state:hover{background:#f0f0f1}
+.pfmp-builder__state.is-on{background:#1d2327;color:#fff}
+.pfmp-builder__devices{display:flex;gap:4px}
+.pfmp-builder__device{cursor:pointer;border:1px solid #c3c4c7;background:#f6f7f7;border-radius:3px;
+  width:34px;height:30px;font-size:15px;line-height:1}
+.pfmp-builder__device.is-on{background:#1d2327;color:#fff;border-color:#1d2327}
+
+.pfmp-builder__layout{display:flex;gap:18px;align-items:flex-start}
+.pfmp-builder__stage{flex:1 1 0;min-width:0;position:sticky;top:32px}
+.pfmp-builder__frame-wrap{background:#eaeaea;border:1px solid #c3c4c7;border-radius:6px;
+  display:flex;justify-content:center;padding:24px 16px;transition:padding .15s;
+  max-height:calc(100vh - 180px);overflow-y:auto}
+.pfmp-builder__canvas{width:100%;max-width:560px;transition:max-width .18s}
+.pfmp-builder__frame-wrap[data-device="mobile"] .pfmp-builder__canvas{max-width:375px}
+.pfmp-builder__caption{font-size:12px;color:#787c82;margin:8px 2px 0}
+.pfmp-builder__caption a{margin-left:2px}
+.pfmp-builder__caption-sep{color:#c3c4c7}
+
+/* preview state panels: only the active one shows, same pattern as a real
+   client-side tab switcher, just scoped to this admin-only mock canvas */
+.pfmp-preview-panel{display:none}
+.pfmp-preview-panel.is-active{display:block;animation:pfmp-rise .3s ease both}
+@keyframes pfmp-rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.pfmp-builder__rail{width:360px;flex:none}
+
+/* accordion sections, native <details>/<summary>, no JS required */
+.pfmp-accordion{background:#fff;border:1px solid #c3c4c7;border-radius:4px;margin-bottom:10px;
+  padding:0 16px 16px}
+.pfmp-accordion:not([open]){padding-bottom:0}
+.pfmp-accordion summary{cursor:pointer;list-style:none;margin:0 -16px;padding:12px 16px;font-size:14px;
+  font-weight:600;color:#1d2327;display:flex;align-items:center;justify-content:space-between;user-select:none}
+.pfmp-accordion summary::-webkit-details-marker{display:none}
+.pfmp-accordion summary::after{content:"\25BE";font-size:11px;color:#787c82;transition:transform .15s}
+.pfmp-accordion[open] summary::after{transform:rotate(180deg)}
+.pfmp-accordion summary:hover{background:#f6f7f7}
+.pfmp-accordion table.form-table{margin:0}
+
+.pfmp-builder__subhead{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#787c82;
+  margin:18px 0 8px;font-weight:600}
+
+.pfmp-builder__presets{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pfmp-builder__preset{display:flex;align-items:center;gap:8px;cursor:pointer;text-align:left;
+  border:1px solid #dcdcde;background:#f6f7f7;border-radius:4px;padding:8px 10px;font-size:12.5px;color:#1d2327}
+.pfmp-builder__preset.is-on{border-color:#2271b1;background:#f0f6fc}
+.pfmp-builder__swatch{width:16px;height:16px;border-radius:50%;background:var(--swatch,#999);flex:none;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+
+.pfmp-builder__field{margin-bottom:14px}
+.pfmp-builder__field:last-child{margin-bottom:0}
+.pfmp-builder__field label{display:block;font-size:12px;font-weight:600;color:#1d2327;margin-bottom:6px}
+.pfmp-builder__field .description{margin:6px 0 0;font-size:12px;color:#646970}
+
+.pfmp-builder__token{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:8px;padding:6px 0}
+.pfmp-builder__token-label{font-size:13px;color:#1d2327}
+.pfmp-builder__token-state{font-size:11px;color:#8c8f94}
+.pfmp-builder__clear{border:0;background:none;color:#2271b1;font-size:11px;cursor:pointer;padding:0}
+.pfmp-builder__clear:hover{color:#135e96;text-decoration:underline}
+
+.pfmp-builder__color{width:90px !important}
+.pfmp-builder__color--token{width:78px !important}
+
+.pfmp-builder__value{font-weight:400;color:#646970;font-size:12px}
+.pfmp-builder__field input[type="range"]{width:100%;margin-top:4px}
+
+.pfmp-builder__bg-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.pfmp-builder__bg-prev{width:56px;height:40px;border-radius:4px;background:#f0f0f1;border:1px solid #dcdcde;
+  overflow:hidden;flex:none}
+.pfmp-builder__bg-prev img{width:100%;height:100%;object-fit:cover;display:block}
+.pfmp-builder__bg-actions{display:flex;gap:8px;flex-wrap:wrap}
+.pfmp-builder__inline-check{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:#1d2327;
+  margin-right:14px}
+.pfmp-builder__inline-check input{margin:0}
+
+@media (max-width:1100px){
+  .pfmp-builder__layout{flex-direction:column}
+  .pfmp-builder__stage{position:static}
+  .pfmp-builder__rail{width:100%}
+  .pfmp-builder__presets{grid-template-columns:1fr 1fr 1fr}
+}

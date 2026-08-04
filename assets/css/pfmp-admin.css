@@ -1,0 +1,19 @@
+/* Pages for MailerPress admin: minimal, native-leaning. */
+.wrap .pfmp-sub{color:#646970;font-size:14px;margin:6px 0 4px;max-width:60ch}
+.pfmp-tabs{margin-bottom:20px}
+
+.pfmp-pagelist{margin:.2em 0 0;padding:0;list-style:none}
+.pfmp-pagelist li{padding:8px 0;border-top:1px solid #f0f0f1;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pfmp-pagelist li:first-child{border-top:0}
+.pfmp-pagelist code{background:#f0f0f1;padding:1px 6px;border-radius:3px;font-size:12px;color:#646970}
+
+.pfmp-logo-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.pfmp-logo-prev{width:52px;height:52px;border-radius:8px;background:#14392E;display:grid;place-items:center;flex:none;overflow:hidden}
+.pfmp-logo-prev img{width:100%;height:100%;object-fit:contain}
+.pfmp-logo-prev span{color:#D19A3B;font-weight:700;font-size:26px}
+
+.pfmp-langdep{transition:opacity .15s}
+
+/* offered-languages checkbox grid (30 items) */
+.pfmp-lang-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 18px;max-width:760px;margin-top:2px}
+.pfmp-lang-grid label{margin:0;padding:3px 0}
