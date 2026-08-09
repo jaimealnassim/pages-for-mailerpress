@@ -7,6 +7,23 @@
  * left overflow locked on the admin body. */
 html.wp-admin, body.wp-admin { overflow-y: auto !important; }
 
+/* WordPress core gives text inputs, selects, and the "regular-text"/
+ * "large-text" classes their own fixed widths (often ~25em, wider than our
+ * 360px rail) and doesn't reset box-sizing. Without this, those fields
+ * overflow the accordion and drag the whole rail wider than intended,
+ * clipping the description text beside them. This scopes a standard
+ * border-box reset and a hard width cap to just this admin screen. */
+.pfmp-builder, .pfmp-builder *, .pfmp-builder *::before, .pfmp-builder *::after {
+  box-sizing: border-box;
+}
+.pfmp-accordion input[type="text"],
+.pfmp-accordion input[type="url"],
+.pfmp-accordion input[type="email"],
+.pfmp-accordion select,
+.pfmp-accordion textarea {
+  max-width: 100%;
+}
+
 .pfmp-builder{padding-bottom:40px}
 .pfmp-builder .pfmp-builder__top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin:12px 0 18px}
 .pfmp-builder h1{margin:0 0 4px;font-size:23px;font-weight:400;color:#1d2327}
@@ -46,7 +63,8 @@ html.wp-admin, body.wp-admin { overflow-y: auto !important; }
 
 /* accordion sections, native <details>/<summary>, no JS required */
 .pfmp-accordion{background:#fff;border:1px solid #c3c4c7;border-radius:4px;margin-bottom:10px;
-  padding:0 16px 16px}
+  padding:0 16px 16px;overflow-x:hidden}
+.pfmp-accordion .description{overflow-wrap:break-word;word-break:break-word}
 .pfmp-accordion:not([open]){padding-bottom:0}
 .pfmp-accordion summary{cursor:pointer;list-style:none;margin:0 -16px;padding:12px 16px;font-size:14px;
   font-weight:600;color:#1d2327;display:flex;align-items:center;justify-content:space-between;user-select:none}

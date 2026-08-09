@@ -4,7 +4,7 @@ Tags: mailerpress, newsletter, unsubscribe, translation, rtl
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.6.3
+Stable tag: 0.6.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -102,6 +102,13 @@ markup, so it stays out of the way of the rest of your site.
 
 == Changelog ==
 
-= 0.6.3 =
+= 0.6.4 =
 Internal project. First made public in this version.
+
+Fixed: Save did not work. The simulated preview's mock manage-subscription
+markup used a real <form> element, nested inside the Builder's own actual
+settings form. Browsers close the outer form as soon as they hit the inner
+one's closing tag, which was silently cutting off every field after the
+preview, including the Save button itself. The mock markup no longer uses
+a <form> element.
 

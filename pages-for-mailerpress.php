@@ -3,7 +3,7 @@
  * Plugin Name:       Pages for MailerPress
  * Plugin URI:        https://github.com/jaimealnassim/pages-for-mailerpress
  * Description:        Restyles and translates the MailerPress subscription, confirmation, and unsubscribe pages: logo, centered layout, and an on-page 30-language switcher. Rides on the classes MailerPress already outputs; no core files touched. Requires MailerPress Pro.
- * Version:           0.6.3
+ * Version:           0.6.5
  * Requires PHP:      7.4
  * Requires at least: 6.0
  * Requires Plugins:  mailerpress,mailerpress-pro
@@ -17,7 +17,7 @@
 
 defined('ABSPATH') || exit;
 
-define('PFMP_VERSION', '0.6.3');
+define('PFMP_VERSION', '0.6.5');
 define('PFMP_FILE', __FILE__);
 define('PFMP_DIR', plugin_dir_path(__FILE__));
 define('PFMP_URL', plugin_dir_url(__FILE__));

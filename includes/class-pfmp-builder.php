@@ -269,13 +269,20 @@ class PFMP_Builder {
     }
 
     private static function mock_manage_form() {
+        // This is a <div>, not a <form>, on purpose: this markup is rendered
+        // inside the Builder's own real <form>, and a nested <form> is
+        // invalid HTML. Browsers silently close the outer (real) form when
+        // they hit this inner form's closing tag, which was breaking the
+        // Save button entirely. The CSS only ever targets the
+        // .mailerpress-manage-subscription class, never the tag, so this
+        // has no visual effect.
         $lists = array(
             array('label' => __('Weekly Digest', 'pages-for-mailerpress'), 'checked' => true),
             array('label' => __('Product Updates', 'pages-for-mailerpress'), 'checked' => true),
             array('label' => __('Special Offers', 'pages-for-mailerpress'), 'checked' => false),
         );
 
-        $html = '<form class="mailerpress-manage-subscription" onsubmit="return false">';
+        $html = '<div class="mailerpress-manage-subscription">';
         $html .= '<p class="mailerpress-change-email-info">' . esc_html__('Uncheck lists to unsubscribe from them, then save your preferences.', 'pages-for-mailerpress') . '</p>';
         $html .= '<div class="mailerpress-form-line"><label>' . esc_html__('Email*', 'pages-for-mailerpress') . '</label><strong>reader@example.com</strong></div>';
         $html .= '<div class="mailerpress-form-line"><label for="pfmp-mock-status">' . esc_html__('Subscription status', 'pages-for-mailerpress') . '</label>'
@@ -288,7 +295,7 @@ class PFMP_Builder {
         }
         $html .= '</div>';
         $html .= '<button type="button" class="mailerpress-submit-btn">' . esc_html__('Save', 'pages-for-mailerpress') . '</button>';
-        $html .= '</form>';
+        $html .= '</div>';
 
         return $html;
     }
