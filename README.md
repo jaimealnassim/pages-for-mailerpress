@@ -40,13 +40,15 @@ What this plugin adds on top of what Pro already offers:
 
 ## Requirements
 
-- WordPress 6.0+
-- PHP 7.4+
+- WordPress 7.1+
+- PHP 8.3+
 - [MailerPress](https://mailerpress.com) (free)
 - **MailerPress Pro** (paid, licensed separately from MailerPress)
 
-The plugin will not activate without both MailerPress and MailerPress Pro present (enforced via
-the `Requires Plugins` header), and does nothing if either is deactivated afterward.
+WordPress will not activate the plugin without MailerPress (the `Requires Plugins` header). That
+header can only name plugins in the WordPress.org directory, and MailerPress Pro is sold separately,
+so the plugin checks for Pro itself: without it, it shows a notice explaining what's missing and does
+nothing else.
 
 ## Installation
 
@@ -67,11 +69,54 @@ the `Requires Plugins` header), and does nothing if either is deactivated afterw
   (`.mailerpress-manage-subscription`, `.mailerpress-form-line`, `.mailerpress-submit-btn`, etc.).
 - Derives a full color palette, background, card background, text, muted text, borders, from a
   single accent color, with per-token manual overrides.
-- Simulates all four MailerPress page states (Manage, Confirmed, Confirm unsubscribe,
-  Unsubscribed) in the Builder using MailerPress's real markup and this plugin's real stylesheet,
-  so the preview is accurate without ever loading the live page.
+- Simulates all five MailerPress page states (Manage, Confirmed, Re-engagement, Confirm
+  unsubscribe, Unsubscribed) in the Builder using MailerPress's real markup and copy, MailerPress's
+  own page stylesheet, and this plugin's real stylesheet, so the preview is accurate without ever
+  loading the live page. The language buttons in the preview really translate it.
 - Translates MailerPress's default page strings into 30 languages, entirely in the browser, no
-  page reload.
+  page reload. Text MailerPress adds after the page loads, like "Saving…" and the message after
+  Save, is translated as it appears, and so is the page title in the browser tab.
+
+## Works with MailerPress 2.2
+
+Tested with MailerPress 2.2.1 and MailerPress Pro 2.2.1.
+
+- Hooks MailerPress's own `mailerpress_pages_rendered_content` filter (falls back to
+  `the_content` on versions before 2.0.7, or force either path with the `pfmp_legacy_wrap`
+  filter).
+- Styles the new subscription list cards through MailerPress's own `--mailerpress-pages-*`
+  color variables, so they follow your brand colors.
+- Supports the new re-engagement confirmation page.
+- **If MailerPress Pro's page design is turned on**, this plugin steps back and adds only the
+  language buttons and translations on top of Pro's design (translate-only mode). Turn Pro's
+  design off to use this plugin's card, colors, and branding instead.
+- The "Prefer fewer emails instead?" link carries the reader's access token, so the manage page
+  opens for them instead of showing a "page not found" error. It only shows up when the token is
+  there.
+
+## For developers
+
+Checked with WordPress Coding Standards (security, i18n, PHP 8.3 compatibility) and PHPStan
+level 6 against the WordPress stubs.
+
+- `pfmp_dictionary` filter: add or change translations. Receives
+  `array( 'es' => array( 'English string' => 'Translation' ), ... )`.
+- `pfmp_legacy_wrap` filter: force the old `the_content` wrapping on or off.
+- `pfmp_track` AJAX action: the anonymous Insights counter. It only accepts a fixed list of
+  events and keys, and caps itself at 1,000 events an hour.
+
+## New in 0.9
+
+- **Reader pages redesigned** for phone, tablet and desktop, with a headline on every page, a
+  compact language menu, a two-option Subscribed/Unsubscribed switch, dark mode, and footer links.
+- **Before they leave:** a "Get fewer emails instead" option, optional one-tap reasons, and a
+  Resubscribe button on the Unsubscribed page (the plugin carries the reader's access token onto
+  MailerPress's unsubscribe link so the next page can offer it).
+- **Newsletter details:** a description and a "how often" label for each MailerPress list.
+- **Insights:** monthly totals only, no personal data, stored in the `pfmp_stats` option.
+- **Settings screen rebuilt:** grouped sections with summaries, color pickers with readability
+  scores, search, preview in any language at desktop, tablet or phone size in light or dark, a
+  change counter with Discard, and import/export.
 
 ## What it doesn't do
 

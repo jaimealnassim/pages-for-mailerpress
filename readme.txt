@@ -1,10 +1,10 @@
 === Pages for MailerPress ===
 Contributors: nahnuplugins
 Tags: mailerpress, newsletter, unsubscribe, translation, rtl
-Requires at least: 6.0
-Tested up to: 6.8
-Requires PHP: 7.4
-Stable tag: 0.6.5
+Requires at least: 7.1
+Tested up to: 7.1
+Requires PHP: 8.3
+Stable tag: 0.9.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -14,9 +14,9 @@ Restyle and translate the MailerPress subscription and unsubscribe pages, with a
 
 Pages for MailerPress is a companion plugin for MailerPress and MailerPress
 Pro. It requires both to be installed, active, and licensed; it does nothing
-on its own. It gives the four pages MailerPress shows your readers a modern,
+on its own. It gives the pages MailerPress shows your readers a modern,
 branded, centered look. Those are manage subscription, confirm unsubscribe,
-unsubscribed, and subscribed. It also lets readers switch language on the page
+unsubscribed, subscribed, and re-engagement confirmed. It also lets readers switch language on the page
 with no reload, including right-to-left support for Arabic, Hebrew, and
 Persian.
 
@@ -25,22 +25,26 @@ files are edited, and nothing here changes how MailerPress sends email or stores
 
 Features:
 
-* A modern, centered card design applied to all four MailerPress page states.
-* Your logo, publication name, and tagline at the top of every page.
-* The Builder: a simulated preview, built from MailerPress's real markup and
-  the plugin's actual stylesheet, next to an accordion of presets, one-color
-  palette derivation, and card style. Every change applies instantly to the
-  preview; nothing is saved until you click Save.
-* Card style controls in the Builder: corner radius, shadow, and an optional
-  background image.
-* On-page language switcher covering 30 languages, with instant, no-reload
-  switching and right-to-left layout for Arabic, Hebrew, and Persian.
+* A modern card design for every MailerPress page, laid out for phones,
+  tablets and desktops. On desktop the Manage page uses two columns.
+* A headline on every page, translated, or your own wording.
+* Your logo, publication name, tagline, and footer links (privacy, contact).
+* Theme colors from one brand color, with color pickers for every color and a
+  readability score for text. Dark mode: off, follow the device, or always.
+* A compact language menu (or a row of buttons) covering 30 languages, with
+  instant, no-reload switching and right-to-left layout for Arabic, Hebrew,
+  and Persian.
+* Before they leave: offer fewer emails instead, ask why (optional, one tap),
+  and offer Resubscribe after unsubscribing, plus a link to your latest issue.
+* Newsletter descriptions and "how often" labels on the Manage page.
+* Insights: monthly totals of what readers do on the pages. No personal data.
+* A settings screen with a live preview (desktop, tablet, phone, light, dark,
+  any language), search, a change counter with Discard, and import/export.
+* Works alongside MailerPress Pro's page design: when Pro's design is on, the
+  plugin adds only the language control and translations.
 * Optional full-page mode that hides the theme header, footer, and CSS.
-* Optional "choose fewer emails" off-ramp linking the confirm-unsubscribe page to
-  the manage page.
-* Assets load only on MailerPress pages. Optional custom CSS.
-* No external requests: type uses the visitor's system fonts, and no third-party
-  services are contacted.
+* No external requests: type uses the visitor's system fonts, and no
+  third-party services are contacted.
 
 == How it works ==
 
@@ -95,6 +99,18 @@ runs in another base language, or you have customized those strings, they will n
 match and are left untouched. List names and subscriber names are stored data and
 are always shown as saved.
 
+= I use MailerPress Pro's page design. What happens? =
+
+Your pages keep Pro's design. This plugin adds only the language buttons and
+the translations on top of it. To use this plugin's card, colors, and branding
+instead, turn off page design in MailerPress Pro.
+
+= What does Insights store? =
+
+Only monthly totals, such as how many readers chose fewer emails or gave a
+reason. No email addresses, IP addresses or cookies. Turn it off under
+Readers, Insights, or clear the counts there.
+
 = Will it work with my theme? =
 
 The styling is scoped to the MailerPress pages and layers over MailerPress's own
@@ -102,13 +118,5 @@ markup, so it stays out of the way of the rest of your site.
 
 == Changelog ==
 
-= 0.6.4 =
+= 0.9.2 =
 Internal project. First made public in this version.
-
-Fixed: Save did not work. The simulated preview's mock manage-subscription
-markup used a real <form> element, nested inside the Builder's own actual
-settings form. Browsers close the outer form as soon as they hit the inner
-one's closing tag, which was silently cutting off every field after the
-preview, including the Save button itself. The mock markup no longer uses
-a <form> element.
-

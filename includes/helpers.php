@@ -1,10 +1,19 @@
 <?php
+/**
+ * Shared helpers: settings, MailerPress page detection, languages and the
+ * translation dictionary.
+ *
+ * @package PagesForMailerPress
+ */
+
 defined('ABSPATH') || exit;
 
 /**
  * Default settings for the plugin.
+ *
+ * @return array<string, mixed>
  */
-function pfmp_defaults() {
+function pfmp_defaults(): array {
     return array(
         'enabled'          => 1,
         'layout'           => 'centered',
@@ -14,7 +23,7 @@ function pfmp_defaults() {
         'logo_url'         => '',
         'pub_name'         => get_bloginfo('name'),
         'tagline'          => '',
-        'preset'           => 'meadow',
+        'preset'           => 'custom',
         'palette'          => array(
             'accent'    => '#14392E',
             'overrides' => array(
@@ -25,13 +34,25 @@ function pfmp_defaults() {
                 'border'     => '',
             ),
         ),
+        'dark_mode'        => 'off',
         'lang_switcher'    => 1,
+        'switcher_style'   => 'menu',
         'languages'        => array('en', 'ar', 'es'),
         'default_lang'     => 'locale',
         'allow_url_lang'   => 1,
-        'assets_scoped'    => 1,
+        'headlines'        => array_fill_keys(array_keys(pfmp_headline_defaults()), ''),
+        'list_details'     => array(),
+        'footer'           => array(
+            'show'    => 1,
+            'privacy' => '',
+            'contact' => '',
+        ),
+        'reasons'          => 1,
+        'undo'             => 1,
+        'archive_url'      => '',
+        'insights'         => 1,
         'custom_css'       => '',
-        'uninstall_cleanup'=> 0,
+        'uninstall_cleanup' => 0,
         'style'            => array(
             'radius' => 18,
             'shadow' => 'soft',
@@ -49,8 +70,10 @@ function pfmp_defaults() {
  * Named shadow presets for the card. Kept intentionally small; "none" and
  * "soft" cover most uses, "strong" is for full-page mode against a busy
  * background image.
+ *
+ * @return array<string, array{label:string, css:string}>
  */
-function pfmp_shadow_presets() {
+function pfmp_shadow_presets(): array {
     return array(
         'none'   => array('label' => __('None', 'pages-for-mailerpress'),   'css' => 'none'),
         'soft'   => array('label' => __('Soft', 'pages-for-mailerpress'),   'css' => '0 1px 2px rgba(20,20,20,.04), 0 18px 48px -24px rgba(20,20,20,.22)'),
@@ -59,32 +82,35 @@ function pfmp_shadow_presets() {
 }
 
 /**
- * First character of a string, safe on hosts without mbstring.
+ * First character of a string, multibyte safe (WordPress ships an
+ * mb_substr() fallback for hosts without mbstring).
  */
-function pfmp_first_char($str, $fallback = 'M') {
+function pfmp_first_char(mixed $str, string $fallback = 'M'): string {
     $str = trim((string) $str);
-    if ($str === '') {
-        return $fallback;
-    }
-    if (function_exists('mb_substr')) {
-        return mb_substr($str, 0, 1);
-    }
-    return substr($str, 0, 1);
+    return $str === '' ? $fallback : mb_substr($str, 0, 1);
 }
 
 /**
- * Merged settings (saved values over defaults).
+ * Merged settings (saved values over defaults), cached for the request.
+ *
+ * @return array<string, mixed>
  */
-function pfmp_get_settings() {
+function pfmp_get_settings(bool $refresh = false): array {
+    static $cache = null;
+    if ($cache !== null && !$refresh) {
+        return $cache;
+    }
     $saved = get_option(PFMP_OPTION, array());
     if (!is_array($saved)) {
         $saved = array();
     }
-    $settings = wp_parse_args($saved, pfmp_defaults());
+    $defaults = pfmp_defaults();
+    $settings = wp_parse_args($saved, $defaults);
+    $settings['languages'] = array_values(array_filter((array) $settings['languages'], 'is_string'));
 
     // wp_parse_args is shallow; make sure a partially-saved palette still has
     // every override key so callers never hit an undefined index.
-    $defaults_palette = pfmp_defaults()['palette'];
+    $defaults_palette = $defaults['palette'];
     $saved_palette     = is_array($saved['palette'] ?? null) ? $saved['palette'] : array();
     $settings['palette'] = wp_parse_args($saved_palette, $defaults_palette);
     $settings['palette']['overrides'] = wp_parse_args(
@@ -93,7 +119,7 @@ function pfmp_get_settings() {
     );
 
     // Same shallow-merge problem for 'style' and its nested background_image.
-    $defaults_style = pfmp_defaults()['style'];
+    $defaults_style = $defaults['style'];
     $saved_style     = is_array($saved['style'] ?? null) ? $saved['style'] : array();
     $settings['style'] = wp_parse_args($saved_style, $defaults_style);
     $settings['style']['background_image'] = wp_parse_args(
@@ -101,14 +127,138 @@ function pfmp_get_settings() {
         $defaults_style['background_image']
     );
 
+    $settings['headlines'] = wp_parse_args(
+        is_array($saved['headlines'] ?? null) ? $saved['headlines'] : array(),
+        $defaults['headlines']
+    );
+    $settings['footer'] = wp_parse_args(
+        is_array($saved['footer'] ?? null) ? $saved['footer'] : array(),
+        $defaults['footer']
+    );
+    $settings['list_details'] = is_array($saved['list_details'] ?? null) ? $saved['list_details'] : array();
+
+    $cache = $settings;
     return $settings;
 }
+
+/**
+ * The headline shown above each page, in MailerPress's English. These are
+ * dictionary keys, so they are translated on the page like MailerPress's own
+ * text. An admin can replace any of them under Page text.
+ *
+ * @return array<string, string>
+ */
+function pfmp_headline_defaults(): array {
+    return array(
+        'manage'               => 'Manage your subscription',
+        'confirm'              => 'Subscription confirmed',
+        'reengagement_confirm' => 'Welcome back',
+        'confirm_unsubscribe'  => 'Before you go',
+        'unsubscribe'          => 'You are unsubscribed',
+    );
+}
+
+/**
+ * The optional reasons a reader can give on the unsubscribe page. The labels
+ * are dictionary keys; the keys are what the insights count.
+ *
+ * @return array<string, string>
+ */
+function pfmp_reason_options(): array {
+    return array(
+        'too_many'     => 'Too many emails',
+        'not_relevant' => 'Not relevant to me',
+        'never'        => 'I never signed up',
+        'other'        => 'Something else',
+    );
+}
+
+/**
+ * MailerPress's mailing lists, id => name, read straight from its own table
+ * (MailerPress has no public function for this). Empty if the table is
+ * missing. Cached for the request and in the object cache for a minute.
+ *
+ * @return array<int, string>
+ */
+function pfmp_mailerpress_lists(): array {
+    static $lists = null;
+    if ($lists !== null) {
+        return $lists;
+    }
+    $cached = wp_cache_get('lists', 'pfmp');
+    if (is_array($cached)) {
+        $lists = $cached;
+        return $lists;
+    }
+
+    global $wpdb;
+    $lists = array();
+    $table = $wpdb->prefix . 'mailerpress_lists';
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- read-only, cached below.
+    if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $wpdb->esc_like($table))) === $table) {
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- read-only, cached below.
+        $rows = $wpdb->get_results($wpdb->prepare('SELECT list_id, name FROM %i ORDER BY name ASC', $table), ARRAY_A);
+        foreach ((array) $rows as $row) {
+            $lists[(int) $row['list_id']] = (string) $row['name'];
+        }
+    }
+    wp_cache_set('lists', $lists, 'pfmp', MINUTE_IN_SECONDS);
+    return $lists;
+}
+
+/**
+ * How many MailerPress pages this plugin is styling right now: 0 when it is
+ * switched off, else the number of distinct pages MailerPress resolves.
+ */
+function pfmp_live_page_count(): int {
+    if (empty(pfmp_get_settings()['enabled'])) {
+        return 0;
+    }
+    $urls = array_filter(array(
+        pfmp_url_for_action('manage') !== '' ? remove_query_arg('action', pfmp_url_for_action('manage')) : '',
+        pfmp_url_for_action('confirm_unsubscribe') !== '' ? remove_query_arg('action', pfmp_url_for_action('confirm_unsubscribe')) : '',
+    ));
+    return count(array_unique($urls));
+}
+
+/**
+ * Where the footer's privacy link points: the admin's own link, else the
+ * site's WordPress privacy page, else nowhere.
+ */
+function pfmp_privacy_url(): string {
+    $o = pfmp_get_settings();
+    if (!empty($o['footer']['privacy'])) {
+        return (string) $o['footer']['privacy'];
+    }
+    return (string) get_privacy_policy_url();
+}
+
+/**
+ * The footer's contact link: a URL as is, an email address as mailto:.
+ */
+function pfmp_contact_url(): string {
+    $contact = (string) (pfmp_get_settings()['footer']['contact'] ?? '');
+    if ($contact === '') {
+        return '';
+    }
+    return is_email($contact) ? 'mailto:' . $contact : $contact;
+}
+
+/**
+ * Settings are read many times per request, so pfmp_get_settings() caches
+ * them; drop that cache whenever the option is saved.
+ */
+add_action('update_option_' . PFMP_OPTION, static fn() => pfmp_get_settings(true));
+add_action('add_option_' . PFMP_OPTION, static fn() => pfmp_get_settings(true));
 
 /**
  * The 30 languages this plugin ships, with autonyms and text direction.
  * The key is an ISO 639-1 code; 'en' is the untranslated source language.
  */
-function pfmp_supported_languages() {
+/**
+ * @return array<string, array{label:string, native:string, rtl:bool}>
+ */
+function pfmp_supported_languages(): array {
     return array(
         'en' => array('label' => 'English',    'native' => 'English',          'rtl' => false),
         'es' => array('label' => 'Spanish',    'native' => 'Español',          'rtl' => false),
@@ -144,6 +294,15 @@ function pfmp_supported_languages() {
 }
 
 /**
+ * Codes of the right-to-left languages among the supported ones.
+ *
+ * @return string[]
+ */
+function pfmp_rtl_languages(): array {
+    return array_keys(array_filter(pfmp_supported_languages(), static fn(array $meta): bool => !empty($meta['rtl'])));
+}
+
+/**
  * Page IDs MailerPress uses for its manage and unsubscribe pages, when the
  * admin has picked a custom WordPress Page for them (used only to list
  * "Pages in use" and to recognize a custom page by ID). This does NOT cover
@@ -153,7 +312,7 @@ function pfmp_supported_languages() {
  *
  * @return array{manage:int,unsubscribe:int} 0 for a role using the default.
  */
-function pfmp_mailerpress_custom_pages() {
+function pfmp_mailerpress_custom_pages(): array {
     $pages = array('manage' => 0, 'unsubscribe' => 0);
     $raw   = get_option('mailerpress_default_settings');
     if (is_string($raw)) {
@@ -176,7 +335,7 @@ function pfmp_mailerpress_custom_pages() {
  *
  * @return int[]
  */
-function pfmp_mailerpress_page_ids() {
+function pfmp_mailerpress_page_ids(): array {
     return array_values(array_filter(array_unique(pfmp_mailerpress_custom_pages())));
 }
 
@@ -186,7 +345,7 @@ function pfmp_mailerpress_page_ids() {
  * "subscription confirmed" double opt-in state); the unsubscribe page
  * handles the unsubscribe confirm/success states.
  */
-function pfmp_page_role_for_action($action) {
+function pfmp_page_role_for_action(string $action): string {
     return in_array($action, array('confirm_unsubscribe', 'unsubscribe'), true) ? 'unsubscribe' : 'manage';
 }
 
@@ -203,14 +362,13 @@ function pfmp_page_role_for_action($action) {
  * ('manage' for the manage page, 'confirm_unsubscribe' for the unsubscribe
  * page); we swap in the action we actually want to preview.
  */
-function pfmp_url_for_action($action) {
+function pfmp_url_for_action(string $action): string {
     if (!function_exists('mailerpress_get_page')) {
         return '';
     }
-    $role    = pfmp_page_role_for_action($action);
-    $context = ($role === 'unsubscribe') ? 'unsub_page' : 'manage_page';
+    $context = pfmp_page_role_for_action($action) === 'unsubscribe' ? 'unsub_page' : 'manage_page';
     $base    = mailerpress_get_page($context);
-    if (empty($base)) {
+    if (!is_string($base) || $base === '') {
         return '';
     }
     $base = remove_query_arg('action', $base);
@@ -224,7 +382,7 @@ function pfmp_url_for_action($action) {
  * post type whose content is the shortcode itself, so has_shortcode()
  * already catches it).
  */
-function pfmp_is_mailerpress_page() {
+function pfmp_is_mailerpress_page(): bool {
     if (is_admin() || !is_singular()) {
         return false;
     }
@@ -235,38 +393,71 @@ function pfmp_is_mailerpress_page() {
     if (has_shortcode((string) $post->post_content, 'mailerpress_pages')) {
         return true;
     }
-    if (in_array($post->ID, pfmp_mailerpress_page_ids(), true)) {
-        return true;
-    }
-    return false;
+    return in_array((int) $post->ID, pfmp_mailerpress_page_ids(), true);
 }
 
 /**
  * The MailerPress "action" the current URL is showing (confirm, manage, etc.).
  */
-function pfmp_current_action() {
+function pfmp_current_action(): string {
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display state from a MailerPress email link.
-    return isset($_GET['action']) ? sanitize_key(wp_unslash($_GET['action'])) : '';
+    return isset($_GET['action']) && is_string($_GET['action']) ? sanitize_key(wp_unslash($_GET['action'])) : '';
 }
 
 /**
  * URL of the MailerPress "manage subscription" page (custom or default).
  */
-function pfmp_manage_url() {
+function pfmp_manage_url(): string {
     return pfmp_url_for_action('manage');
 }
 
 /**
- * The four page states the Builder can simulate, matching MailerPress's own
+ * The page states the Builder can simulate, matching MailerPress's own
  * ?action= values for the [mailerpress_pages] shortcode.
+ *
+ * @return array<string, string>
  */
-function pfmp_builder_states() {
+function pfmp_builder_states(): array {
     return array(
-        'manage'             => __('Manage', 'pages-for-mailerpress'),
-        'confirm'            => __('Confirmed', 'pages-for-mailerpress'),
-        'confirm_unsubscribe'=> __('Confirm unsubscribe', 'pages-for-mailerpress'),
-        'unsubscribe'        => __('Unsubscribed', 'pages-for-mailerpress'),
+        'manage'               => __('Manage', 'pages-for-mailerpress'),
+        'confirm'              => __('Confirmed', 'pages-for-mailerpress'),
+        'confirm_unsubscribe'  => __('Confirm unsubscribe', 'pages-for-mailerpress'),
+        'unsubscribe'          => __('Unsubscribed', 'pages-for-mailerpress'),
+        'reengagement_confirm' => __('Re-engagement', 'pages-for-mailerpress'),
     );
+}
+
+/**
+ * Is MailerPress Pro's own page design switched on? Pro 2.2 can wrap these
+ * same pages in a design of its own. When it does, this plugin steps aside
+ * and only adds the language switcher, so readers never get a card inside a
+ * card.
+ */
+function pfmp_pro_design_enabled(): bool {
+    if (!defined('MAILERPRESS_PRO_VERSION')) {
+        return false;
+    }
+    $raw = get_option('mailerpress_pages_style_settings', array());
+    if (is_string($raw)) {
+        $raw = json_decode($raw, true);
+    }
+    return is_array($raw) && !empty($raw['enabled']);
+}
+
+/**
+ * Where MailerPress Pro's page design settings live, for links in notices.
+ */
+function pfmp_pro_design_settings_url(): string {
+    return admin_url('admin.php?page=mailerpress/campaigns.php&path=/home/settings');
+}
+
+/**
+ * Is this request MailerPress Pro's own style editor preview (its admin
+ * iframe)? This plugin stays out of that preview entirely.
+ */
+function pfmp_is_pro_style_editor_request(): bool {
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only flag.
+    return !empty($_GET['mp_style_editor']);
 }
 
 /**
@@ -275,7 +466,14 @@ function pfmp_builder_states() {
  * Each language row lists translations in the same order as $keys. If MailerPress
  * runs in a non-English base language these won't match and text is left as-is.
  */
-function pfmp_dictionary() {
+/**
+ * @return array<string, array<string, string>>
+ */
+function pfmp_dictionary(): array {
+    static $cache = null;
+    if ($cache !== null) {
+        return $cache;
+    }
     $keys = array(
         'Uncheck lists to unsubscribe from them, then save your preferences.',
         'Email*',
@@ -334,5 +532,45 @@ function pfmp_dictionary() {
             $dict[$lang] = array_combine($keys, $vals);
         }
     }
-    return $dict;
+
+    // Strings MailerPress 2.2 added, plus MailerPress Pro's page header copy.
+    foreach (array('dictionary-extra.php', 'dictionary-v09.php') as $file) {
+        $extra = require PFMP_DIR . 'includes/' . $file;
+        foreach ($extra['rows'] as $lang => $vals) {
+            if (isset($dict[$lang]) && count($vals) === count($extra['keys'])) {
+                $dict[$lang] = array_merge($dict[$lang], array_combine($extra['keys'], $vals));
+            }
+        }
+    }
+
+    // MailerPress 2.2 reworded a few labels. Map the new wording onto the
+    // existing translations so both old and new MailerPress versions match.
+    foreach ($dict as $lang => $table) {
+        $dict[$lang]['Email']      = rtrim($table['Email*'], '*');
+        $dict[$lang]['First name'] = $table['First Name'];
+        $dict[$lang]['Last name']  = $table['Last Name'];
+        $dict[$lang]['Saving…']    = str_replace('...', '…', $table['Saving...']);
+    }
+
+    /**
+     * Filters the translation dictionary, keyed by language code and then by
+     * MailerPress's original English string. Use it to correct a translation
+     * or cover a string you've customized.
+     *
+     * @param array<string, array<string, string>> $dict
+     */
+    $filtered = apply_filters('pfmp_dictionary', $dict);
+    $cache    = is_array($filtered) ? $filtered : $dict;
+    return $cache;
+}
+
+/**
+ * Only the dictionaries for the languages a site actually offers, so readers
+ * download a few kilobytes instead of all 29 languages.
+ *
+ * @param string[] $codes
+ * @return array<string, array<string, string>>
+ */
+function pfmp_dictionary_for(array $codes): array {
+    return array_intersect_key(pfmp_dictionary(), array_flip($codes));
 }

@@ -1,0 +1,725 @@
+# Copyright (C) 2026 Nahnu Plugins
+# This file is distributed under the GPLv3 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Pages for MailerPress 0.9.1\n"
+"Report-Msgid-Bugs-To: https://github.com/jaimealnassim/pages-for-mailerpress/issues\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: \n"
+"X-Domain: pages-for-mailerpress\n"
+
+#: pages-for-mailerpress.php:85
+msgid "Pages for MailerPress is active, but MailerPress Pro was not detected. This plugin requires MailerPress Pro, in addition to MailerPress, to have any effect."
+msgstr ""
+
+#: pages-for-mailerpress.php:86
+msgid "Pages for MailerPress is active, but MailerPress was not detected. Install and activate MailerPress, and MailerPress Pro, for this plugin to have any effect."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:27 includes/class-pfmp-builder.php:229
+msgid "Pages for MailerPress"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:29
+msgid "Pages"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:46 includes/class-pfmp-builder.php:269 includes/class-pfmp-builder.php:278
+msgid "Settings"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:74 includes/class-pfmp-builder.php:451
+msgid "Select logo"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:75
+msgid "Use this logo"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:92
+msgid "Select background image"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:93
+msgid "Use this image"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:94
+msgid "Copied"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:100 includes/class-pfmp-builder.php:297
+msgid "No unsaved changes"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:101
+msgid "1 unsaved change"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:103
+msgid "%d unsaved changes"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:104
+msgid "Auto"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:105
+msgid "Custom"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:106
+msgid "Low"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:107 includes/class-pfmp-builder.php:237 includes/class-pfmp-builder.php:388
+msgid "Off"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:108 includes/class-pfmp-builder.php:528
+msgid "Menu"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:109
+msgid "Buttons"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:111
+msgid "%d languages"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:113
+msgid "%d edited"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:115
+msgid "%d described"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:116
+msgid "Built-in"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:117 includes/class-pfmp-builder.php:396
+msgid "Centered"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:118 includes/class-pfmp-builder.php:397
+msgid "Left-aligned"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:119 includes/class-pfmp-builder.php:328
+msgid "Light"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:120
+msgid "Follows device"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:121 includes/class-pfmp-builder.php:329
+msgid "Dark"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:122
+msgid "Full page"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:123
+msgid "Inside your theme"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:124
+msgid "Reasons"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:125
+msgid "Fewer emails"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:126
+msgid "Undo"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:127
+msgid "Privacy"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:128
+msgid "Contact"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:129
+msgid "Hidden"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:130 includes/helpers.php:78
+msgid "None"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:131
+msgid "Counting"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:242
+msgid "Style, translate, and preview the pages MailerPress shows your readers."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:247
+msgid "View live page"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:249
+msgid "Help"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:255
+msgid "Settings saved."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:261
+msgid "MailerPress Pro page design is on."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:262
+msgid "Your pages use the design from MailerPress Pro, and this plugin adds only the language control and translations. The design settings here apply when Pro page design is off."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:263
+msgid "Open MailerPress page design"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:268 includes/class-pfmp-builder.php:640
+msgid "View"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:270 includes/class-pfmp-builder.php:312
+msgid "Preview"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:281 includes/class-pfmp-builder.php:282
+msgid "Search settings"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:284
+msgid "No settings match."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:298
+msgid "Discard"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:300
+msgid "Save changes"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:314
+msgid "Page"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:320
+msgid "Preview in"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:322
+msgid "Preview size"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:323
+msgid "Desktop"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:324
+msgid "Tablet"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:325
+msgid "Phone"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:327
+msgid "Appearance"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:348
+msgid "Live preview. Changes show here right away and go live when you save."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:357
+msgid "Design"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:359
+msgid "Theme"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:360
+msgid "Brand accent"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:376
+msgid "%s color picker"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:382
+msgid "Use auto"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:386
+msgid "Pick your brand accent and the rest is worked out from it. Set any other color to override it; the badge shows how readable text is on the card."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:387
+msgid "Dark mode"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:389
+msgid "Follow device"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:390
+msgid "Always"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:394
+msgid "Card and layout"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:395
+msgid "Layout"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:401
+msgid "Corner radius"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:405
+msgid "Shadow"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:413
+msgid "Background image"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:420
+msgid "Select image"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:421 includes/class-pfmp-builder.php:452
+msgid "Remove"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:425
+msgid "Fills the space around the card in full-page mode."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:428
+msgid "Stretch the image to fill the screen"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:429
+msgid "Tile the image instead"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:437
+msgid "Content"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:439
+msgid "Logo and name"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:442
+msgid "Logo"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:456
+msgid "PNG or SVG, about 80px tall. Without one, the first letter of the name is shown."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:459
+msgid "Publication name"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:460
+msgid "Tagline"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:460
+msgid "A short line under the name. Leave empty to hide it."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:463
+msgid "Page text"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:464
+msgid "The headline at the top of each page. Leave a field empty to use the built-in headline, which is translated into every language. Your own text is shown as you wrote it, in every language."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:475
+msgid "Newsletter details"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:478
+msgid "No MailerPress lists yet. Create lists in MailerPress, then describe them here."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:480
+msgid "A line about each newsletter and how often it arrives, shown on the Manage page so readers know what they are unchecking. Shown as written in every language."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:490
+msgid "Description"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:493
+msgid "What readers get"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:494
+msgid "How often"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:497
+msgid "Weekly"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:503
+msgid "Footer links"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:504
+msgid "Show footer links"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:510
+msgid "Privacy policy link"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:511
+msgid "Leave empty to use your WordPress privacy page."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:511
+msgid "Your site has no WordPress privacy page yet, so add a link here to show one."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:514
+msgid "Contact link or email"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:522
+msgid "Readers"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:524
+msgid "Languages"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:525
+msgid "Let readers switch language"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:525
+msgid "Instant, with no page reload. Right-to-left languages flip the layout."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:527
+msgid "Style"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:529
+msgid "Row of buttons"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:531
+msgid "Offered languages"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:547
+msgid "Fallback language"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:549
+msgid "WordPress site language"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:554
+msgid "Readers see their browser language when you offer it, and this one when you do not."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:557
+msgid "Allow <code>?lang=</code> in links to pick the language"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:557
+msgid "Handy for sending one list a link that opens in its language."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:561
+msgid "Before they leave"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:562
+msgid "Offer fewer emails first"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:562
+msgid "Links to the Manage page, where readers can keep only some newsletters."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:563
+msgid "Ask why they are leaving"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:563
+msgid "Optional one-tap reasons. Only totals are kept; see Insights."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:564
+msgid "Offer Resubscribe after unsubscribing"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:564
+msgid "For readers who clicked by mistake."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:565
+msgid "Link to your latest issue"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:565
+msgid "Shown after unsubscribing and after confirming. Leave empty to hide."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:568
+msgid "Insights"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:569
+msgid "Count what readers do on these pages"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:569
+msgid "Totals per month only. No email addresses, IP addresses or cookies are stored."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:571
+msgid "Clear all counts when I save"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:579
+msgid "Saw the unsubscribe page"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:580
+msgid "Chose fewer emails"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:581
+msgid "Kept their subscription"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:582 includes/helpers.php:425
+msgid "Unsubscribed"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:583
+msgid "Resubscribed"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:587
+msgid "Reason: %s"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:592
+msgid "Action"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:593
+msgid "This month"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:594
+msgid "Last month"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:615
+msgid "Languages chosen this month:"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:623
+msgid "Advanced"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:625
+msgid "Pages and behavior"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:626
+msgid "Use this design on MailerPress pages"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:626
+msgid "When off, MailerPress shows its default pages."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:627
+msgid "Full-page mode"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:627
+msgid "Shows the pages on their own, without your theme's header, footer or styles."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:630
+msgid "Manage page"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:631
+msgid "Unsubscribe page"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:639
+msgid "your page"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:639
+msgid "MailerPress default"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:642
+msgid "Not set up in MailerPress yet."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:649
+msgid "Custom CSS, import and export"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:652
+msgid "Custom CSS"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:654
+msgid "Loaded last on the pages, so it wins."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:657
+msgid "Export"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:659
+msgid "Copy settings"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:662
+msgid "Import"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:663
+msgid "Paste exported settings, then save."
+msgstr ""
+
+#: includes/class-pfmp-builder.php:666
+msgid "Delete this plugin's settings and counts when it is deleted"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:701
+msgid "Weekly Digest"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:702
+msgid "Product Updates"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:703
+msgid "Special Offers"
+msgstr ""
+
+#: includes/class-pfmp-frontend.php:437 includes/class-pfmp-frontend.php:465
+msgid "Language"
+msgstr ""
+
+#: includes/class-pfmp-palette.php:26
+msgid "Meadow"
+msgstr ""
+
+#: includes/class-pfmp-palette.php:27
+msgid "Slate"
+msgstr ""
+
+#: includes/class-pfmp-palette.php:28
+msgid "Ember"
+msgstr ""
+
+#: includes/class-pfmp-palette.php:29
+msgid "Orchid"
+msgstr ""
+
+#: includes/class-pfmp-palette.php:30
+msgid "Ink"
+msgstr ""
+
+#: includes/class-pfmp-palette.php:31
+msgid "Sand"
+msgstr ""
+
+#: includes/class-pfmp-palette.php:43
+msgid "Page background"
+msgstr ""
+
+#: includes/class-pfmp-palette.php:44
+msgid "Card background"
+msgstr ""
+
+#: includes/class-pfmp-palette.php:45
+msgid "Text"
+msgstr ""
+
+#: includes/class-pfmp-palette.php:46
+msgid "Muted text"
+msgstr ""
+
+#: includes/class-pfmp-palette.php:47
+msgid "Borders"
+msgstr ""
+
+#: includes/class-pfmp-settings.php:48
+msgid "Settings imported."
+msgstr ""
+
+#: includes/class-pfmp-settings.php:51
+msgid "The imported settings were not valid JSON, so nothing was imported."
+msgstr ""
+
+#: includes/helpers.php:79
+msgid "Soft"
+msgstr ""
+
+#: includes/helpers.php:80
+msgid "Strong"
+msgstr ""
+
+#: includes/helpers.php:422
+msgid "Manage"
+msgstr ""
+
+#: includes/helpers.php:423
+msgid "Confirmed"
+msgstr ""
+
+#: includes/helpers.php:424
+msgid "Confirm unsubscribe"
+msgstr ""
+
+#: includes/helpers.php:426
+msgid "Re-engagement"
+msgstr ""
+
+#: includes/class-pfmp-builder.php:235
+msgid "Live on %d page"
+msgid_plural "Live on %d pages"
+msgstr[0] ""
+msgstr[1] ""

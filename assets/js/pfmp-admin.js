@@ -1,38 +1,39 @@
-/* Pages for MailerPress admin: color pickers, language toggle, media logo
- * picker. Settings sections are native <details> accordions now, so they
- * need no JS to expand or collapse. */
+/* Pages for MailerPress admin: language section state and the logo picker.
+ * Settings sections are native <details> accordions, so they need no JS. */
 (function ($) {
   'use strict';
 
   $(function () {
-    // Color pickers now live on the Builder screen (see pfmp-builder.js).
+    var strings = window.PFMPAdmin || {};
 
-    // Language dependency toggle
+    // Language options depend on the switcher being on. They are dimmed and
+    // made inert when it's off, never disabled: disabled fields are left out
+    // of the form, which would wipe the chosen languages on Save.
     var $langToggle = $('#pfmp-langtoggle');
     function syncLang() {
-      $('.pfmp-langdep').css('opacity', $langToggle.is(':checked') ? '' : '0.5');
-      $('.pfmp-langdep').find('input,select').prop('disabled', !$langToggle.is(':checked'));
+      var on = $langToggle.is(':checked');
+      $('.pfmp-langdep').toggleClass('is-off', !on).prop('inert', !on);
     }
     if ($langToggle.length) {
-      // keep English checkbox disabled regardless
-      $langToggle.on('change', function () {
-        syncLang();
-        $('.pfmp-langdep input[value="en"]').prop('disabled', true);
-      });
+      $langToggle.on('change', syncLang);
       syncLang();
-      $('.pfmp-langdep input[value="en"]').prop('disabled', true);
     }
 
-    // Media logo picker
+    function letter() {
+      var name = $.trim($('#pfmp-pub').val() || strings.pubName || '');
+      return name ? Array.from(name)[0].toUpperCase() : 'M';
+    }
+
+    // Logo picker. Elements are built with jQuery, never by concatenating
+    // a URL into HTML.
     var frame;
-    var PFMPAdmin = window.PFMPAdmin || {};
     $('#pfmp-logo-pick').on('click', function (e) {
       e.preventDefault();
       if (typeof wp === 'undefined' || !wp.media) { return; }
       if (frame) { frame.open(); return; }
       frame = wp.media({
-        title: PFMPAdmin.choose || 'Select logo',
-        button: { text: PFMPAdmin.useThis || 'Use this logo' },
+        title: strings.choose || 'Select logo',
+        button: { text: strings.useThis || 'Use this logo' },
         library: { type: 'image' },
         multiple: false
       });
@@ -40,7 +41,7 @@
         var att = frame.state().get('selection').first().toJSON();
         $('#pfmp-logo-id').val(att.id);
         $('#pfmp-logo-url').val(att.url);
-        $('.pfmp-logo-prev').html('<img src="' + att.url + '" alt="">');
+        $('.pfmp-logo-prev').empty().append($('<img>', { src: att.url, alt: '' }));
         $('#pfmp-logo-clear').show();
         $(document).trigger('pfmp:logo-changed');
       });
@@ -51,7 +52,7 @@
       e.preventDefault();
       $('#pfmp-logo-id').val('');
       $('#pfmp-logo-url').val('');
-      $('.pfmp-logo-prev').html('<span>M</span>');
+      $('.pfmp-logo-prev').empty().append($('<span>').text(letter()));
       $(this).hide();
       $(document).trigger('pfmp:logo-changed');
     });

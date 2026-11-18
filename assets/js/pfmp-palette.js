@@ -67,6 +67,9 @@
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
   }
 
+  // Same rule as WordPress's sanitize_hex_color(): #abc or #aabbcc.
+  var HEX = /^#([0-9a-f]{3}){1,2}$/i;
+
   /**
    * @param {string} accent hex color
    * @param {Object} overrides {background,surface,text,muted,border} hex or ''
@@ -74,7 +77,7 @@
    */
   function resolve(accent, overrides) {
     overrides = overrides || {};
-    if (!/^#[0-9a-f]{6}$/i.test(accent)) { accent = '#14392E'; }
+    if (!HEX.test(accent)) { accent = '#14392E'; }
     var hsl = hexToHsl(accent);
 
     var auto = {
@@ -88,11 +91,32 @@
     var palette = { accent: accent };
     ['background', 'surface', 'text', 'muted', 'border'].forEach(function (key) {
       var o = overrides[key];
-      palette[key] = (o && /^#[0-9a-f]{6}$/i.test(o)) ? o : auto[key];
+      palette[key] = (o && HEX.test(o)) ? o : auto[key];
     });
     palette.buttonText = relativeLuminance(accent) > 0.42 ? '#14181A' : '#FFFFFF';
     return palette;
   }
 
-  global.PFMPPalette = { resolve: resolve, hexToHsl: hexToHsl, hslToHex: hslToHex };
+  // Mirrors PFMP_Palette::resolve_dark().
+  function resolveDark(accent) {
+    if (!HEX.test(accent)) { accent = '#14392E'; }
+    var hsl = hexToHsl(accent);
+    var tint = clamp(hsl.s * 0.3, 4, 18);
+    return {
+      accent: hslToHex(hsl.h, clamp(hsl.s * 0.6, 25, 60), 68),
+      buttonText: hslToHex(hsl.h, tint, 7),
+      background: hslToHex(hsl.h, tint, 7),
+      surface: hslToHex(hsl.h, tint, 11),
+      text: hslToHex(hsl.h, 10, 92),
+      muted: hslToHex(hsl.h, 8, 70),
+      border: hslToHex(hsl.h, tint, 22)
+    };
+  }
+
+  function contrast(a, b) {
+    var la = relativeLuminance(a), lb = relativeLuminance(b);
+    return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+  }
+
+  global.PFMPPalette = { resolve: resolve, resolveDark: resolveDark, contrast: contrast, isHex: function (v) { return HEX.test(v); }, hexToHsl: hexToHsl, hslToHex: hslToHex };
 })(window);
