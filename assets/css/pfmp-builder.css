@@ -22,6 +22,11 @@
 
 /* ---- layout ---- */
 .pfmp-mtabs{display:none}
+/* MailerPress's editor CSS, loaded on every page under its menu, sets
+   body:not(.mailerpress-ui-no-full-screen){overflow:hidden}. Undo it here
+   so the page scrolls (WordPress's own value is overflow-x:hidden). */
+html body.pfmp-screen{overflow:visible;overflow-x:hidden}
+
 .pfmp-layout{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:20px;align-items:start}
 .pfmp-preview{position:sticky;top:46px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .pfmp-rail{display:flex;flex-direction:column;gap:8px;min-width:0}
@@ -183,3 +188,4 @@
   .pfmp-color__badge{text-align:left}
   .pfmp-listrow__fields{grid-template-columns:minmax(0,1fr)}
 }
+.pfmp-builder .wp-header-end{margin:0;border:0;height:0}

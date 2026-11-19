@@ -135,6 +135,12 @@ final class PFMP_Settings {
             'contact' => is_email($contact) ? sanitize_email($contact) : esc_url_raw($contact),
         );
 
+        // Stored by MailerPress, not here (see pfmp_set_lists_enabled()). Only
+        // the settings screen sends lists_ui, so an import never changes it.
+        if (!empty($input['lists_ui'])) {
+            pfmp_set_lists_enabled(!empty($input['show_lists']));
+        }
+
         $out['reasons']     = self::flag($input, 'reasons');
         $out['undo']        = self::flag($input, 'undo');
         $out['archive_url'] = esc_url_raw(trim(self::str($input['archive_url'] ?? '')));

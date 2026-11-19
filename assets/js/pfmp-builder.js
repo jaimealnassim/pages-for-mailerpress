@@ -184,7 +184,11 @@
     }
 
     function applyFeatures() {
-      $canvas.find('[data-pfmp-feature="offramp"]').toggle($('#pfmp-f-offramp').is(':checked'));
+      var showLists = $('#pfmp-show-lists').is(':checked');
+      $canvas.find('[data-pfmp-mock-lists]').prop('hidden', !showLists);
+      $('#pfmp-listdetails').prop('hidden', !showLists);
+      // "Fewer emails" sends readers to pick lists, so it needs the list.
+      $canvas.find('[data-pfmp-feature="offramp"]').toggle(showLists && $('#pfmp-f-offramp').is(':checked'));
       $canvas.find('[data-pfmp-feature="reasons"]').toggle($('#pfmp-f-reasons').is(':checked'));
       $canvas.find('[data-pfmp-feature="undo"]').toggle($('#pfmp-f-undo').is(':checked'));
       $canvas.find('[data-pfmp-feature="archive"]').toggle($.trim($('#pfmp-archive').val() || '') !== '');
@@ -275,7 +279,7 @@
       set('text', edited ? fmt(cfg.nEdited, edited) : cfg.builtIn);
       var described = 0;
       $.each(listDetails(), function (id, d) { if (d.desc || d.when) { described++; } });
-      set('lists', described ? fmt(cfg.nLists, described) : cfg.none);
+      set('lists', !$('#pfmp-show-lists').is(':checked') ? cfg.hidden : (described ? fmt(cfg.nLists, described) : cfg.none));
       var foot = [];
       if ($.trim($('#pfmp-foot-privacy').val() || '') || cfg.privacyUrl) { foot.push(cfg.privacy); }
       if ($.trim($('#pfmp-foot-contact').val() || '')) { foot.push(cfg.contact); }
@@ -284,7 +288,7 @@
         ? fmt(cfg.nLanguages, offeredCodes().length) + ' · ' + (radio(N('switcher_style')) === 'buttons' ? cfg.buttons : cfg.menu)
         : cfg.off);
       var leave = [];
-      if ($('#pfmp-f-offramp').is(':checked')) { leave.push(cfg.fewer); }
+      if ($('#pfmp-f-offramp').is(':checked') && $('#pfmp-show-lists').is(':checked')) { leave.push(cfg.fewer); }
       if ($('#pfmp-f-reasons').is(':checked')) { leave.push(cfg.reasons); }
       if ($('#pfmp-f-undo').is(':checked')) { leave.push(cfg.undo); }
       set('leave', leave.join(' · ') || cfg.off);
@@ -320,7 +324,7 @@
       if ($(t).is('[data-headline]')) { applyHeadlines(); }
       if ($(t).is('[data-list-desc], [data-list-when]')) { applyLists(); }
       if (/\[footer\]/.test(name)) { applyFooter(); }
-      if (/offramp|reasons|undo|archive_url/.test(name)) { applyFeatures(); }
+      if (/offramp|reasons|undo|archive_url|show_lists/.test(name)) { applyFeatures(); }
       if (/lang_switcher|switcher_style|\[languages\]/.test(name)) { applyLanguages(); }
       if (t.id === 'pfmp-css') { applyCustomCss(); }
       meta();

@@ -4,17 +4,16 @@ Tags: mailerpress, newsletter, unsubscribe, translation, rtl
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.3
-Stable tag: 0.9.2
+Stable tag: 0.9.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Restyle and translate the MailerPress subscription and unsubscribe pages, with an on-page 30-language switcher. Requires MailerPress Pro.
+Restyle and translate the MailerPress subscription and unsubscribe pages, with an on-page 30-language switcher.
 
 == Description ==
 
-Pages for MailerPress is a companion plugin for MailerPress and MailerPress
-Pro. It requires both to be installed, active, and licensed; it does nothing
-on its own. It gives the pages MailerPress shows your readers a modern,
+Pages for MailerPress is a companion plugin for MailerPress. It needs
+MailerPress (free) installed and active; it does nothing on its own. It gives the pages MailerPress shows your readers a modern,
 branded, centered look. Those are manage subscription, confirm unsubscribe,
 unsubscribed, subscribed, and re-engagement confirmed. It also lets readers switch language on the page
 with no reload, including right-to-left support for Arabic, Hebrew, and
@@ -71,9 +70,9 @@ exactly as stored.
 
 = Does this require MailerPress? =
 
-Yes, both MailerPress and MailerPress Pro. It only styles and translates
-MailerPress's pages, so it has no effect without them installed, active, and
-licensed.
+Yes, MailerPress (free) must be installed and active. It only styles and
+translates MailerPress's pages, so it has no effect without it. MailerPress Pro
+is not needed.
 
 = Does it change how MailerPress sends email or stores subscribers? =
 
@@ -118,5 +117,5 @@ markup, so it stays out of the way of the rest of your site.
 
 == Changelog ==
 
-= 0.9.2 =
+= 0.9.6 =
 Internal project. First made public in this version.

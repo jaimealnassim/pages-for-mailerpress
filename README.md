@@ -7,7 +7,7 @@ live-previews the subscription and unsubscribe pages MailerPress shows your read
 centered layout, color and card-style controls, and an on-page 30-language switcher, all
 layered on top of MailerPress's own markup with no core files touched.
 
-**This plugin requires MailerPress Pro.** See [Background](#background) below for why.
+Works with the free MailerPress plugin. MailerPress Pro is not needed.
 
 ## Background
 
@@ -20,18 +20,15 @@ happened in **MailerPress Pro 2.0.7**, which added a live-preview "MailerPress P
 editor of its own: presets, one-color palette derivation, corner radius, shadow, and a
 background image.
 
-Now that MailerPress Pro has shipped its own version of this, we're publishing ours too, but out
-of respect for their team and the feature they built, **this plugin now requires MailerPress Pro
-to be installed, active, and licensed**. It does nothing at all without it. This isn't a free
-substitute for their work, it's an alternative built alongside it, and it leans on Pro's own
-`mailerpress_get_page()` API rather than reimplementing MailerPress's page-resolution logic
-ourselves.
+Now that MailerPress has shipped its own version, we're publishing ours too. It leans on
+MailerPress's own `mailerpress_get_page()` function rather than reimplementing MailerPress's
+page logic, and if you use MailerPress Pro's page design, it steps back and adds only the
+language control on top of it.
 
-What this plugin adds on top of what Pro already offers:
+What this plugin offers:
 
 - **A 30-language, no-reload switcher.** Readers can change the page's language on the spot,
-  including full right-to-left layout for Arabic, Hebrew, and Persian. Pro's style editor does
-  not offer translation.
+  including full right-to-left layout for Arabic, Hebrew, and Persian.
 - **Full-page mode**, which removes the surrounding theme's header, footer, and stylesheets
   entirely, so the page is just the card.
 - **An accordion-based settings screen** that keeps every control, presets, colors, card style,
@@ -42,21 +39,20 @@ What this plugin adds on top of what Pro already offers:
 
 - WordPress 7.1+
 - PHP 8.3+
-- [MailerPress](https://mailerpress.com) (free)
-- **MailerPress Pro** (paid, licensed separately from MailerPress)
+- [MailerPress](https://wordpress.org/plugins/mailerpress/) (free)
 
-WordPress will not activate the plugin without MailerPress (the `Requires Plugins` header). That
-header can only name plugins in the WordPress.org directory, and MailerPress Pro is sold separately,
-so the plugin checks for Pro itself: without it, it shows a notice explaining what's missing and does
-nothing else.
+WordPress will not activate the plugin without MailerPress (the `Requires Plugins` header).
+MailerPress Pro is not needed.
 
 ## Installation
 
 1. Clone or download this repository:
    `git clone https://github.com/jaimealnassim/pages-for-mailerpress.git`
 2. Zip the `pages-for-mailerpress` folder, or copy it directly into `wp-content/plugins/`.
-3. Activate **MailerPress**, **MailerPress Pro**, and then **Pages for MailerPress**, in that
-   order.
+   Keep the folder name `pages-for-mailerpress`: updates are matched by folder name, and GitHub's
+   "Download ZIP" names it `pages-for-mailerpress-main`. The zip attached to each release has the
+   right name.
+3. Activate **MailerPress**, then **Pages for MailerPress**.
 4. Go to **MailerPress → Pages** (or **Settings → Pages for MailerPress** if the MailerPress
    admin menu isn't present) to open the Builder.
 
@@ -79,7 +75,7 @@ nothing else.
 
 ## Works with MailerPress 2.2
 
-Tested with MailerPress 2.2.1 and MailerPress Pro 2.2.1.
+Tested with MailerPress 2.2.1, with and without MailerPress Pro 2.2.1.
 
 - Hooks MailerPress's own `mailerpress_pages_rendered_content` filter (falls back to
   `the_content` on versions before 2.0.7, or force either path with the `pfmp_legacy_wrap`
@@ -121,8 +117,8 @@ level 6 against the WordPress stubs.
 ## What it doesn't do
 
 - It doesn't touch how MailerPress sends email, stores contacts, or manages lists.
-- It doesn't unlock, modify, or interact with MailerPress Pro's licensing in any way. It simply
-  checks whether Pro is active, the same way it checks for MailerPress itself.
+- It doesn't unlock, change, or interact with MailerPress Pro or its licensing in any way. Pro
+  features stay Pro features.
 - It isn't distributed through, or affiliated with, MailerPress or Team MailerPress.
 
 ## License

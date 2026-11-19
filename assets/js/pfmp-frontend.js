@@ -229,68 +229,109 @@
   /* Enhancements                                                        */
   /* ------------------------------------------------------------------ */
 
-  // The language menu: a button that opens a list of languages.
   var menuDocBound = false;
+
+  // The language menu: a button that opens a popup of languages. On the live
+  // pages it's a modal <dialog> (a bottom sheet on phones), which traps focus,
+  // closes on Escape and dims the page. In the settings preview it opens
+  // inside the card instead, so it doesn't cover the admin screen.
+  var X_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  var dialogSeq = 0;
+
   function closeMenus(except) {
-    var open = doc.querySelectorAll('.pfmp-langbtn[aria-expanded="true"]');
+    var open = doc.querySelectorAll('.pfmp-langdialog[open]');
     for (var i = 0; i < open.length; i++) {
-      if (open[i] === except) { continue; }
-      open[i].setAttribute('aria-expanded', 'false');
-      var list = open[i].parentNode.querySelector('.pfmp-langlist');
-      if (list) { list.hidden = true; }
+      if (open[i] !== except && open[i].pfmpClose) { open[i].pfmpClose(false); }
     }
   }
+
   function menus(root) {
     var all = root.querySelectorAll('.pfmp-langmenu');
     for (var i = 0; i < all.length; i++) {
       (function (menu) {
         if (menu.getAttribute('data-pfmp-ready')) { return; }
-        menu.setAttribute('data-pfmp-ready', '1');
         var btn = menu.querySelector('.pfmp-langbtn');
         var list = menu.querySelector('.pfmp-langlist');
         if (!btn || !list) { return; }
+        menu.setAttribute('data-pfmp-ready', '1');
+
+        var id = 'pfmp-langdialog-' + (++dialogSeq);
+        var dialog = doc.createElement('dialog');
+        dialog.className = 'pfmp-langdialog';
+        dialog.id = id;
+        dialog.setAttribute('aria-labelledby', id + '-title');
+        var inline = !!menu.closest('.pfmp-canvas') || typeof dialog.showModal !== 'function';
+        if (inline) { dialog.classList.add('pfmp-inline'); }
+        dialog.innerHTML = '<div class="pfmp-langdialog__head"><p class="pfmp-langdialog__title" id="' + id + '-title">Language</p>' +
+          '<button type="button" class="pfmp-langclose">' + X_ICON + '<span class="pfmp-sr">Close</span></button></div>';
+
+        // A plain list of toggle buttons: each one says whether it's chosen.
+        list.removeAttribute('role');
+        list.hidden = false;
+        var opts = list.querySelectorAll('.pfmp-lang');
+        for (var k = 0; k < opts.length; k++) {
+          opts[k].removeAttribute('role');
+          opts[k].removeAttribute('aria-selected');
+          opts[k].setAttribute('aria-pressed', opts[k].classList.contains('is-on') ? 'true' : 'false');
+        }
+        dialog.appendChild(list);
+        menu.appendChild(dialog);
+
+        btn.setAttribute('aria-haspopup', 'dialog');
+        btn.setAttribute('aria-controls', id);
+        btn.setAttribute('aria-expanded', 'false');
+
         var options = function () { return Array.prototype.slice.call(list.querySelectorAll('.pfmp-lang')); };
 
-        function open(focusSelected) {
-          closeMenus(btn);
-          list.hidden = false;
+        function open() {
+          closeMenus(dialog);
+          if (inline) { dialog.setAttribute('open', ''); } else { dialog.showModal(); }
           btn.setAttribute('aria-expanded', 'true');
-          if (focusSelected) {
-            var opts = options();
-            var on = list.querySelector('.pfmp-lang.is-on') || opts[0];
-            if (on) { on.focus(); }
-          }
+          var on = list.querySelector('.pfmp-lang.is-on') || options()[0];
+          if (on) { on.focus(); }
         }
         function close(refocus) {
-          list.hidden = true;
+          if (!dialog.hasAttribute('open')) { return; }
+          if (inline) { dialog.removeAttribute('open'); } else { dialog.close(); }
           btn.setAttribute('aria-expanded', 'false');
           if (refocus) { btn.focus(); }
         }
+        dialog.pfmpClose = close;
+
         btn.addEventListener('click', function () {
-          if (list.hidden) { open(false); } else { close(false); }
+          if (dialog.hasAttribute('open')) { close(false); } else { open(); }
         });
-        btn.addEventListener('keydown', function (e) {
-          if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); open(true); }
+        // Escape on a modal dialog fires "cancel"; handle it ourselves so
+        // the button state and focus stay right.
+        dialog.addEventListener('cancel', function (e) { e.preventDefault(); close(true); });
+        dialog.addEventListener('click', function (e) {
+          if (e.target.closest('.pfmp-langclose')) { close(true); return; }
+          if (e.target.closest('.pfmp-lang')) { close(true); return; }
+          // A click on the dimmed backdrop lands on the dialog itself.
+          if (e.target === dialog && !inline) {
+            var r = dialog.getBoundingClientRect();
+            if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) { close(true); }
+          }
         });
-        list.addEventListener('click', function (e) {
-          if (e.target.closest('.pfmp-lang')) { close(true); }
-        });
-        list.addEventListener('keydown', function (e) {
-          var opts = options();
-          var idx = opts.indexOf(doc.activeElement);
+        dialog.addEventListener('keydown', function (e) {
+          var list2 = options();
+          var idx = list2.indexOf(doc.activeElement);
           if (e.key === 'Escape') { e.preventDefault(); close(true); }
-          else if (e.key === 'ArrowDown') { e.preventDefault(); (opts[idx + 1] || opts[0]).focus(); }
-          else if (e.key === 'ArrowUp') { e.preventDefault(); (opts[idx - 1] || opts[opts.length - 1]).focus(); }
-          else if (e.key === 'Home') { e.preventDefault(); opts[0].focus(); }
-          else if (e.key === 'End') { e.preventDefault(); opts[opts.length - 1].focus(); }
-          else if (e.key === 'Tab') { close(false); }
+          else if (idx === -1) { return; }
+          else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); (list2[idx + 1] || list2[0]).focus(); }
+          else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); (list2[idx - 1] || list2[list2.length - 1]).focus(); }
+          else if (e.key === 'Home') { e.preventDefault(); list2[0].focus(); }
+          else if (e.key === 'End') { e.preventDefault(); list2[list2.length - 1].focus(); }
         });
       })(all[i]);
     }
     if (!menuDocBound) {
       menuDocBound = true;
+      // The in-card popup closes on a click anywhere else.
       doc.addEventListener('click', function (e) {
-        if (!e.target.closest || !e.target.closest('.pfmp-langmenu')) { closeMenus(null); }
+        if (!e.target.closest || e.target.closest('.pfmp-langmenu')) { return; }
+        var open = doc.querySelectorAll('.pfmp-langdialog.pfmp-inline[open]');
+        for (var j = 0; j < open.length; j++) { open[j].pfmpClose(false); }
       });
     }
   }

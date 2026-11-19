@@ -501,7 +501,8 @@ final class PFMP_Frontend {
 
         switch ($action) {
             case 'confirm_unsubscribe':
-                if ($manage !== '') {
+                // "Fewer emails" means picking lists on the Manage page.
+                if ($manage !== '' && ($preview || pfmp_lists_enabled())) {
                     $html .= '<a class="pfmp-option" href="' . esc_url($manage) . '" data-pfmp-carry-cid data-pfmp-track="fewer" data-pfmp-feature="offramp"' . $needs_cid . (empty($o['offramp']) ? ' style="display:none"' : '') . '>'
                            . '<span class="pfmp-option-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg></span>'
                            . '<span class="pfmp-option-text"><span class="pfmp-option-title">' . esc_html('Get fewer emails instead') . '</span>'

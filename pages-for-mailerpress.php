@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Pages for MailerPress
  * Plugin URI:        https://github.com/jaimealnassim/pages-for-mailerpress
- * Description:       Restyles and translates the MailerPress subscription, confirmation, and unsubscribe pages: logo, centered layout, and an on-page 30-language switcher. Rides on the classes MailerPress already outputs; no core files touched. Requires MailerPress Pro.
- * Version:           0.9.2
+ * Description:       Restyles and translates the MailerPress subscription, confirmation, and unsubscribe pages: logo, centered layout, and an on-page 30-language switcher. Rides on the classes MailerPress already outputs; no core files touched.
+ * Version:           0.9.6
  * Requires at least: 7.1
  * Requires PHP:      8.3
  * Requires Plugins:  mailerpress
@@ -19,7 +19,7 @@
 
 defined('ABSPATH') || exit;
 
-define('PFMP_VERSION', '0.9.2');
+define('PFMP_VERSION', '0.9.6');
 define('PFMP_FILE', __FILE__);
 define('PFMP_DIR', plugin_dir_path(__FILE__));
 define('PFMP_URL', plugin_dir_url(__FILE__));
@@ -46,27 +46,17 @@ function pfmp_has_mailerpress(): bool {
 }
 
 /**
- * Is MailerPress Pro active?
- */
-function pfmp_has_mailerpress_pro(): bool {
-    return defined('MAILERPRESS_PRO_VERSION');
-}
-
-/**
- * True once both MailerPress and MailerPress Pro are active. Pro is a real
- * requirement, not a soft nudge: without it the plugin does nothing.
- *
- * The Requires Plugins header lists only MailerPress, because WordPress.org
- * plugins may only depend on plugins hosted there, and MailerPress Pro is
- * sold separately. Pro is checked here instead, with a notice explaining it.
+ * True once MailerPress is active. MailerPress Pro is not needed; when it is
+ * active and its own page design is on, the plugin adds only the language
+ * control (see PFMP_Frontend::mode()).
  */
 function pfmp_dependencies_met(): bool {
-    return pfmp_has_mailerpress() && pfmp_has_mailerpress_pro();
+    return pfmp_has_mailerpress();
 }
 
 /**
- * Boot once WordPress, MailerPress, and MailerPress Pro are all loaded. Does
- * nothing otherwise; see pfmp_dependency_notice().
+ * Boot once WordPress and MailerPress are loaded. Does nothing otherwise;
+ * see pfmp_dependency_notice().
  */
 function pfmp_boot(): void {
     if (!pfmp_dependencies_met()) {
@@ -80,17 +70,33 @@ function pfmp_boot(): void {
 add_action('plugins_loaded', 'pfmp_boot');
 
 /**
- * Explains what's missing when the plugin can't do anything yet.
+ * Explains what's missing when MailerPress isn't active.
  */
 function pfmp_dependency_notice(): void {
     if (!current_user_can('activate_plugins') || pfmp_dependencies_met()) {
         return;
     }
-
-    $message = pfmp_has_mailerpress()
-        ? __('Pages for MailerPress is active, but MailerPress Pro was not detected. This plugin requires MailerPress Pro, in addition to MailerPress, to have any effect.', 'pages-for-mailerpress')
-        : __('Pages for MailerPress is active, but MailerPress was not detected. Install and activate MailerPress, and MailerPress Pro, for this plugin to have any effect.', 'pages-for-mailerpress');
-
-    printf('<div class="notice notice-warning"><p>%s</p></div>', esc_html($message));
+    printf(
+        '<div class="notice notice-warning"><p>%s</p></div>',
+        esc_html__('Pages for MailerPress is active, but MailerPress was not detected. Install and activate MailerPress for this plugin to have any effect.', 'pages-for-mailerpress')
+    );
 }
 add_action('admin_notices', 'pfmp_dependency_notice');
+
+/**
+ * When MailerPress is missing, the settings screen still exists and explains
+ * why, instead of WordPress's "Sorry, you are not allowed to access this
+ * page." for a saved link or bookmark.
+ */
+function pfmp_missing_dependency_page(): void {
+    if (pfmp_dependencies_met()) {
+        return;
+    }
+    $title = __('Pages for MailerPress', 'pages-for-mailerpress');
+    add_options_page($title, $title, 'manage_options', 'pages-for-mailerpress', static function () use ($title): void {
+        echo '<div class="wrap"><h1>' . esc_html($title) . '</h1>';
+        echo '<p>' . esc_html__('MailerPress was not detected. Install and activate MailerPress to use this plugin.', 'pages-for-mailerpress') . '</p>';
+        echo '<p><a class="button" href="' . esc_url(admin_url('plugins.php')) . '">' . esc_html__('Go to Plugins', 'pages-for-mailerpress') . '</a></p></div>';
+    });
+}
+add_action('admin_menu', 'pfmp_missing_dependency_page', 99);

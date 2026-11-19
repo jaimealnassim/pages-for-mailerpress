@@ -19,21 +19,60 @@ final class PFMP_Builder {
 
     public function __construct() {
         add_action('admin_menu', array($this, 'menu'), 99);
+        // Runs after the menu is built but before WordPress checks access.
+        add_action('admin_menu', array($this, 'redirect_old_address'), PHP_INT_MAX);
         add_action('admin_enqueue_scripts', array($this, 'assets'));
+        add_filter('admin_body_class', array($this, 'body_class'));
         add_filter('plugin_action_links_' . plugin_basename(PFMP_FILE), array($this, 'action_link'));
     }
 
+    /**
+     * MailerPress's top-level menu slug: "mailerpress/campaigns.php" since
+     * MailerPress 2.x, "mailerpress" before. Empty when the menu isn't there.
+     */
+    public static function parent_slug(): string {
+        foreach (array('mailerpress/campaigns.php', 'mailerpress') as $slug) {
+            if (isset($GLOBALS['admin_page_hooks'][$slug])) {
+                return $slug;
+            }
+        }
+        return '';
+    }
+
+    /**
+     * One menu item: MailerPress > Pages, or Settings > Pages for MailerPress
+     * when MailerPress's own menu isn't there (for example, when a role
+     * can't see it).
+     */
     public function menu(): void {
-        $title = __('Pages for MailerPress', 'pages-for-mailerpress');
-        if (isset($GLOBALS['admin_page_hooks']['mailerpress'])) {
-            add_submenu_page('mailerpress', $title, __('Pages', 'pages-for-mailerpress'), 'manage_options', self::PAGE, array($this, 'render'));
+        $title  = __('Pages for MailerPress', 'pages-for-mailerpress');
+        $parent = self::parent_slug();
+        if ($parent !== '') {
+            add_submenu_page($parent, $title, __('Pages', 'pages-for-mailerpress'), 'manage_options', self::PAGE, array($this, 'render'));
         } else {
             add_options_page($title, $title, 'manage_options', self::PAGE, array($this, 'render'));
         }
     }
 
+    /**
+     * Versions before 0.9.3 put the screen under Settings. Send that address
+     * (bookmarks, history) to the screen's current place instead of letting
+     * WordPress say "Sorry, you are not allowed to access this page."
+     */
+    public function redirect_old_address(): void {
+        global $pagenow;
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only routing.
+        $page = isset($_GET['page']) && is_string($_GET['page']) ? sanitize_key(wp_unslash($_GET['page'])) : '';
+        if ($page !== self::PAGE || $pagenow !== 'options-general.php' || self::parent_slug() === '') {
+            return;
+        }
+        $args = array_diff_key(wp_unslash($_GET), array('page' => true)); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        wp_safe_redirect(add_query_arg(array_map('rawurlencode', array_filter($args, 'is_string')), self::url()));
+        exit;
+    }
+
     public static function url(): string {
-        $base = isset($GLOBALS['admin_page_hooks']['mailerpress']) ? 'admin.php' : 'options-general.php';
+        $base = self::parent_slug() !== '' ? 'admin.php' : 'options-general.php';
         return admin_url($base . '?page=' . self::PAGE);
     }
 
@@ -45,6 +84,22 @@ final class PFMP_Builder {
         $links = (array) $links;
         array_unshift($links, '<a href="' . esc_url(self::url()) . '">' . esc_html__('Settings', 'pages-for-mailerpress') . '</a>');
         return $links;
+    }
+
+    /**
+     * Marks this screen so its stylesheet can undo MailerPress's scroll lock:
+     * MailerPress loads its editor CSS on every page under its menu, and that
+     * CSS hides the page's overflow, which stopped the settings column from
+     * scrolling.
+     *
+     * @param string $classes
+     */
+    public function body_class($classes): string {
+        $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+        if ($screen && str_contains((string) $screen->id, self::PAGE)) {
+            $classes .= ' pfmp-screen';
+        }
+        return (string) $classes;
     }
 
     /**
@@ -250,6 +305,7 @@ final class PFMP_Builder {
                 </div>
             </div>
 
+            <hr class="wp-header-end">
             <?php settings_errors(PFMP_OPTION); ?>
             <?php if (isset($_GET['settings-updated']) && empty(get_settings_errors(PFMP_OPTION))) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only. ?>
                 <div class="notice notice-success is-dismissible"><p><?php esc_html_e('Settings saved.', 'pages-for-mailerpress'); ?></p></div>
@@ -473,6 +529,15 @@ final class PFMP_Builder {
         self::close_section();
 
         self::open_section('lists', __('Newsletter details', 'pages-for-mailerpress'));
+        echo '<input type="hidden" name="' . esc_attr(self::name('lists_ui')) . '" value="1">';
+        self::toggle(
+            self::name('show_lists'),
+            pfmp_lists_enabled(),
+            __('Let readers choose newsletters', 'pages-for-mailerpress'),
+            __('Shows "Manage your subscriptions" on the Manage page. Turn it off and readers can still change their status and name, but not pick lists. This is the same setting as "Disable list management" in MailerPress settings.', 'pages-for-mailerpress'),
+            'pfmp-show-lists'
+        );
+        echo '<div id="pfmp-listdetails"' . (pfmp_lists_enabled() ? '' : ' hidden') . '>';
         $lists = pfmp_mailerpress_lists();
         if (empty($lists)) {
             echo '<p class="pfmp-desc">' . esc_html__('No MailerPress lists yet. Create lists in MailerPress, then describe them here.', 'pages-for-mailerpress') . '</p>';
@@ -498,6 +563,7 @@ final class PFMP_Builder {
                 );
             }
         }
+        echo '</div>';
         self::close_section();
 
         self::open_section('footer', __('Footer links', 'pages-for-mailerpress'));
@@ -559,7 +625,7 @@ final class PFMP_Builder {
         self::close_section();
 
         self::open_section('leave', __('Before they leave', 'pages-for-mailerpress'));
-        self::toggle(self::name('offramp'), !empty($o['offramp']), __('Offer fewer emails first', 'pages-for-mailerpress'), __('Links to the Manage page, where readers can keep only some newsletters.', 'pages-for-mailerpress'), 'pfmp-f-offramp');
+        self::toggle(self::name('offramp'), !empty($o['offramp']), __('Offer fewer emails first', 'pages-for-mailerpress'), __('Links to the Manage page, where readers can keep only some newsletters. Shown only when readers can choose newsletters.', 'pages-for-mailerpress'), 'pfmp-f-offramp');
         self::toggle(self::name('reasons'), !empty($o['reasons']), __('Ask why they are leaving', 'pages-for-mailerpress'), __('Optional one-tap reasons. Only totals are kept; see Insights.', 'pages-for-mailerpress'), 'pfmp-f-reasons');
         self::toggle(self::name('undo'), !empty($o['undo']), __('Offer Resubscribe after unsubscribing', 'pages-for-mailerpress'), __('For readers who clicked by mistake.', 'pages-for-mailerpress'), 'pfmp-f-undo');
         self::text('pfmp-archive', self::name('archive_url'), (string) $o['archive_url'], __('Link to your latest issue', 'pages-for-mailerpress'), __('Shown after unsubscribing and after confirming. Leave empty to hide.', 'pages-for-mailerpress'), array('type' => 'url', 'placeholder' => 'https://'));
@@ -705,13 +771,13 @@ final class PFMP_Builder {
         }
 
         $html  = '<div class="mailerpress-manage-subscription">';
-        $html .= '<p class="mailerpress-change-email-info">' . esc_html('Uncheck lists to unsubscribe from them, then save your preferences.') . '</p>';
+        $html .= '<p class="mailerpress-change-email-info" data-pfmp-mock-lists>' . esc_html('Uncheck lists to unsubscribe from them, then save your preferences.') . '</p>';
         $html .= '<div class="mailerpress-form-line"><label>' . esc_html('Email*') . '</label><strong>reader@example.com</strong></div>';
         $html .= '<div class="mailerpress-form-line"><label for="subscription_status">' . esc_html('Subscription status') . '</label>'
                . '<select id="subscription_status"><option value="subscribed" selected>' . esc_html('Subscribed') . '</option><option value="unsubscribed">' . esc_html('Unsubscribed') . '</option></select></div>';
         $html .= '<div class="mailerpress-form-line"><label for="contact_first_name">' . esc_html('First name') . '</label><input id="contact_first_name" type="text" value="Alex"></div>';
         $html .= '<div class="mailerpress-form-line"><label for="contact_last_name">' . esc_html('Last name') . '</label><input id="contact_last_name" type="text" value="Rivera"></div>';
-        $html .= '<div class="mailerpress-form-line"><fieldset class="mailerpress-subscription-list-group">';
+        $html .= '<div class="mailerpress-form-line" data-pfmp-mock-lists><fieldset class="mailerpress-subscription-list-group">';
         $html .= '<legend>' . esc_html('Manage your subscriptions') . '</legend><div class="mailerpress-subscription-list-options">';
         $n = 0;
         foreach ($lists as $id => $name) {

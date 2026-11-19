@@ -330,6 +330,44 @@ function pfmp_mailerpress_custom_pages(): array {
 }
 
 /**
+ * MailerPress's own settings, as an array, whether it stored them as an array
+ * or as JSON.
+ *
+ * @return array<string, mixed>
+ */
+function pfmp_mailerpress_settings(): array {
+    $raw = get_option('mailerpress_default_settings', array());
+    if (is_string($raw)) {
+        $raw = json_decode($raw, true);
+    }
+    return is_array($raw) ? $raw : array();
+}
+
+/**
+ * Does the Manage page show the "Manage your subscriptions" list? This is
+ * MailerPress's own "Disable list management" setting, read from MailerPress,
+ * so the two screens never disagree. When it's off, MailerPress leaves the
+ * list out of the page and its save handler doesn't touch lists.
+ */
+function pfmp_lists_enabled(): bool {
+    return !wp_validate_boolean(pfmp_mailerpress_settings()['disableListManagement'] ?? false);
+}
+
+/**
+ * Turns the list on or off by changing MailerPress's own setting, keeping
+ * the format MailerPress stored it in. Does nothing if nothing changes.
+ */
+function pfmp_set_lists_enabled(bool $show): void {
+    if ($show === pfmp_lists_enabled()) {
+        return;
+    }
+    $raw      = get_option('mailerpress_default_settings', array());
+    $settings = pfmp_mailerpress_settings();
+    $settings['disableListManagement'] = !$show;
+    update_option('mailerpress_default_settings', is_string($raw) ? wp_json_encode($settings) : $settings);
+}
+
+/**
  * Custom MailerPress page IDs, deduplicated, for the "Pages in use" list and
  * for recognizing a custom page by post ID.
  *

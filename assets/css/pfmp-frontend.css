@@ -71,14 +71,51 @@
 .pfmp-langbtn:hover{background:var(--pfmp-tint)}
 .pfmp-langbtn:focus-visible,.pfmp-lang:focus-visible,.pfmp-chip:focus-visible,.pfmp-btn:focus-visible,.pfmp-option:focus-visible,.pfmp-seg button:focus-visible{
   outline:2px solid var(--pfmp-ink);outline-offset:2px}
-.pfmp-langlist{position:absolute;inset-inline-end:0;top:calc(100% + 6px);z-index:30;min-width:210px;max-height:320px;overflow:auto;
-  margin:0;padding:6px;list-style:none;background:var(--pfmp-paper);border:1px solid var(--pfmp-line-2);border-radius:14px;
-  box-shadow:0 18px 40px -16px rgba(0,0,0,.35)}
-.pfmp-langlist li{margin:0;padding:0}
-.pfmp-langlist .pfmp-lang{display:flex;width:100%;min-height:44px;align-items:center;padding:0 12px;border:0;border-radius:9px;
-  background:transparent;color:var(--pfmp-text);font:inherit;font-size:14.5px;text-align:start;cursor:pointer}
-.pfmp-langlist .pfmp-lang:hover{background:var(--pfmp-track)}
-.pfmp-langlist .pfmp-lang.is-on{background:var(--pfmp-tint);color:var(--pfmp-ink);font-weight:600}
+/* The language popup. A modal <dialog> on live pages (centered card, bottom
+   sheet on phones); .pfmp-inline opens inside the card in the settings
+   preview. The plain list below is the no-script fallback state. */
+.pfmp-langlist[hidden]{display:none}
+.pfmp-langdialog{box-sizing:border-box;width:min(460px,calc(100vw - 32px));max-width:none;max-height:min(80vh,640px);margin:auto;padding:0;
+  border:1px solid var(--pfmp-line-2,#dce5e2);border-radius:20px;background:var(--pfmp-paper,#fff);color:var(--pfmp-text,#1c2623);
+  box-shadow:0 30px 80px -24px rgba(0,0,0,.45);overflow:hidden;font:inherit;line-height:1.5}
+.pfmp-langdialog[open]{display:flex;flex-direction:column}
+.pfmp-langdialog::backdrop{background:rgba(12,16,15,.5)}
+html:has(.pfmp-langdialog[open]:modal){overflow:hidden}
+.pfmp-langdialog__head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 16px 8px 22px;flex:none}
+.pfmp-langdialog__title{margin:0;font-size:17px;font-weight:700;color:var(--pfmp-text,#1c2623)}
+.pfmp-langclose{display:grid;place-items:center;flex:none;width:44px;height:44px;padding:0;border:0;border-radius:50%;
+  background:var(--pfmp-track,#eef1f0);color:var(--pfmp-text,#1c2623);cursor:pointer}
+.pfmp-langclose:hover{background:var(--pfmp-tint,#e6eeeb)}
+.pfmp-langclose:focus-visible{outline:2px solid var(--pfmp-ink,#14392e);outline-offset:2px}
+.pfmp-langdialog .pfmp-langlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0;padding:8px 16px 18px;
+  list-style:none;overflow:auto;overscroll-behavior:contain}
+.pfmp-langdialog .pfmp-langlist li{margin:0;padding:0;min-width:0}
+.pfmp-langdialog .pfmp-lang{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:50px;padding:0 14px;
+  border:1px solid var(--pfmp-line,#dce5e2);border-radius:12px;background:var(--pfmp-paper,#fff);color:var(--pfmp-text,#1c2623);
+  font:inherit;font-size:15px;text-align:start;cursor:pointer;overflow-wrap:anywhere}
+.pfmp-langdialog .pfmp-lang:hover{background:var(--pfmp-track,#eef1f0)}
+.pfmp-langdialog .pfmp-lang.is-on{border-color:var(--pfmp-ink,#14392e);background:var(--pfmp-tint,#e6eeeb);color:var(--pfmp-ink,#14392e);font-weight:600;
+  box-shadow:inset 0 0 0 1px var(--pfmp-ink,#14392e)}
+.pfmp-langdialog .pfmp-lang.is-on::after{content:"";flex:none;width:7px;height:12px;margin-inline-end:3px;border:solid currentColor;
+  border-width:0 2.5px 2.5px 0;transform:translateY(-2px) rotate(45deg)}
+.pfmp-langdialog .pfmp-lang:focus-visible{outline:2px solid var(--pfmp-ink,#14392e);outline-offset:2px}
+@media (prefers-reduced-motion:no-preference){
+  .pfmp-langdialog[open]:modal{animation:pfmp-pop .18s ease-out}
+  .pfmp-langdialog[open]:modal::backdrop{animation:pfmp-fade .18s ease-out}
+}
+@keyframes pfmp-pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes pfmp-fade{from{opacity:0}to{opacity:1}}
+@keyframes pfmp-sheet{from{transform:translateY(100%)}to{transform:none}}
+/* Phones: a bottom sheet, easy to reach with a thumb. */
+@media (max-width:600px){
+  .pfmp-langdialog:modal{width:100%;max-height:85vh;margin:auto 0 0;border-width:1px 0 0;border-radius:22px 22px 0 0;
+    padding-bottom:env(safe-area-inset-bottom)}
+  .pfmp-langdialog:modal::before{content:"";align-self:center;flex:none;width:40px;height:4px;margin-top:10px;border-radius:2px;background:var(--pfmp-line-2,#dce5e2)}
+  @media (prefers-reduced-motion:no-preference){.pfmp-langdialog[open]:modal{animation:pfmp-sheet .22s ease-out}}
+}
+/* Settings preview: opens inside the card. */
+.pfmp-langdialog.pfmp-inline{position:absolute;inset-inline-end:0;inset-inline-start:auto;top:calc(100% + 8px);z-index:40;margin:0;
+  width:min(420px,calc(100cqw - 32px));max-height:420px}
 
 /* row-of-buttons style */
 .pfmp-langbar{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 22px}
@@ -100,7 +137,8 @@
 .pfmp-centered:not(.pfmp-state-manage) .pfmp-cta,
 .pfmp-centered:not(.pfmp-state-manage) .pfmp-chips{justify-content:center}
 .pfmp-centered:not(.pfmp-state-manage) .pfmp-reasons legend{margin-inline:auto}
-.pfmp-option,.pfmp-boxes{text-align:start}
+.pfmp-option{text-align:start}
+.pfmp-left .pfmp-boxes{text-align:start}
 
 /* state icon above the headline */
 .pfmp-body::before{display:block;width:68px;height:68px;margin:4px auto 18px;border-radius:50%;
@@ -223,12 +261,15 @@
 .pfmp-actions a.button{margin-top:0}
 
 /* ---- after: unsubscribed, confirmed ---- */
-.pfmp-boxes{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
-.pfmp-box{display:flex;flex-direction:column;gap:8px;padding:18px;border:1px solid var(--pfmp-line);border-radius:14px}
+.pfmp-boxes{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.pfmp-left .pfmp-boxes{justify-content:flex-start}
+.pfmp-box{box-sizing:border-box;flex:1 1 240px;max-width:420px;display:flex;flex-direction:column;gap:8px;padding:18px;border:1px solid var(--pfmp-line);border-radius:14px}
 .pfmp-box-soft{background:var(--pfmp-field);border-color:transparent}
 .pfmp-box-title{margin:0;font-weight:600;color:var(--pfmp-text)}
 .pfmp-box-text{margin:0;font-size:14px;color:var(--pfmp-soft)}
 .pfmp-box .pfmp-btn,.pfmp-box .pfmp-link{margin-top:auto}
+.pfmp-centered .pfmp-box .pfmp-link{align-self:center}
+.pfmp-left .pfmp-box .pfmp-link{align-self:flex-start}
 .pfmp-box .pfmp-btn{min-height:48px}
 .pfmp-cta{display:flex;flex-direction:column;align-items:center;gap:6px}
 .pfmp-left .pfmp-cta{align-items:flex-start}
@@ -244,8 +285,6 @@
 /* ---- wider cards: tablet and up ---- */
 @container pfmp (min-width:540px){
   .pfmp-title{font-size:30px}
-  .pfmp-boxes{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .pfmp-boxes > :only-child{grid-column:1 / -1}
   .pfmp-wrap .mailerpress-manage-subscription{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:14px}
   .pfmp-wrap .mailerpress-manage-subscription > *{grid-column:1 / -1}
   .pfmp-wrap .mailerpress-form-line:has(#contact_first_name){grid-column:1}
@@ -254,11 +293,11 @@
 /* desktop: details and Save on the left, newsletters on the right */
 @container pfmp (min-width:760px){
   .pfmp-title{font-size:34px}
-  .pfmp-wrap .mailerpress-manage-subscription:has(fieldset){grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.35fr);column-gap:16px}
-  .pfmp-wrap .mailerpress-manage-subscription:has(fieldset) > *{grid-column:1 / 3}
-  .pfmp-wrap .mailerpress-manage-subscription:has(fieldset) .mailerpress-form-line:has(#contact_first_name){grid-column:1}
-  .pfmp-wrap .mailerpress-manage-subscription:has(fieldset) .mailerpress-form-line:has(#contact_last_name){grid-column:2}
-  .pfmp-wrap .mailerpress-manage-subscription .mailerpress-form-line:has(fieldset){grid-column:3;grid-row:1 / span 12;padding-inline-start:16px;margin:0}
+  .pfmp-wrap .mailerpress-manage-subscription:has(fieldset:not([hidden] *)){grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.35fr);column-gap:16px}
+  .pfmp-wrap .mailerpress-manage-subscription:has(fieldset:not([hidden] *)) > *{grid-column:1 / 3}
+  .pfmp-wrap .mailerpress-manage-subscription:has(fieldset:not([hidden] *)) .mailerpress-form-line:has(#contact_first_name){grid-column:1}
+  .pfmp-wrap .mailerpress-manage-subscription:has(fieldset:not([hidden] *)) .mailerpress-form-line:has(#contact_last_name){grid-column:2}
+  .pfmp-wrap .mailerpress-manage-subscription .mailerpress-form-line:has(fieldset:not([hidden] *)){grid-column:3;grid-row:1 / span 12;padding-inline-start:16px;margin:0}
 }
 /* phones: actions stack with the main choice on top, Save stays in reach */
 @container pfmp (max-width:539px){
@@ -299,3 +338,7 @@ body.pfmp-takeover{margin:0;min-height:100vh;background-color:var(--pfmp-canvas,
   .pfmp-takeover-main{padding:0}
   .pfmp-takeover-main .pfmp-wrap{min-height:100vh;border:0;border-radius:0;box-shadow:none;max-width:none}
 }
+
+/* Preview only: the settings screen hides the list without rebuilding the
+   form. On live pages MailerPress leaves it out when lists are off. */
+.pfmp-wrap [data-pfmp-mock-lists][hidden]{display:none !important}

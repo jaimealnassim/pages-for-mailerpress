@@ -11,7 +11,7 @@
 defined('ABSPATH') || exit;
 
 if (!defined('NAHNU_UPDATER_WORKER_URL')) {
-    define('NAHNU_UPDATER_WORKER_URL', 'https://nahnu-updates.nahnucdn.com');
+    define('NAHNU_UPDATER_WORKER_URL', 'https://nahnu-updates.nahnucdn.com'); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- the name the Nahnu updater class reads.
 }
 require_once __DIR__ . '/class-nahnu-updater.php';
 Nahnu_Updater::register(PFMP_FILE);
